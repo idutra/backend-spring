@@ -1,5 +1,6 @@
 package com.idutra.api.rest.controller.v1;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.idutra.api.component.MensagemComponente;
 import com.idutra.api.model.dto.rest.PersonagemDTO;
 import com.idutra.api.model.dto.rest.request.AlterarPersonagemRequestDTO;
@@ -85,7 +86,7 @@ public class HarryPotterController extends AbstractController {
                     content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ResponseErroDTO.class))})
     })
-    public ResponseEntity<CriarPersonagemResponseDTO> incluirPersonagem(@Valid @NotNull @RequestBody CriarPersonagemRequestDTO personagemDTO) {
+    public ResponseEntity<CriarPersonagemResponseDTO> incluirPersonagem(@Valid @NotNull @RequestBody CriarPersonagemRequestDTO personagemDTO) throws JsonProcessingException {
         CriarPersonagemResponseDTO responseDTO = this.service.salvarPersonagem(personagemDTO);
         return ok(responseDTO);
     }

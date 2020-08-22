@@ -28,7 +28,7 @@ public class Personagem {
 
     @Id
     @NotNull
-    private String uuid;
+    private String id;
     @NotEmpty
     private String name;
     @NotEmpty
@@ -46,8 +46,8 @@ public class Personagem {
 
     @PrePersist
     public void prePersist() {
-        if (Strings.isEmpty(this.uuid)) {
-            this.uuid = UUID.randomUUID().toString();
+        if (Strings.isEmpty(this.id)) {
+            this.id = UUID.randomUUID().toString();
         }
         this.dataHoraCriacao = OffsetDateTime.now();
         this.dataHoraUltAtualizacao = OffsetDateTime.now();

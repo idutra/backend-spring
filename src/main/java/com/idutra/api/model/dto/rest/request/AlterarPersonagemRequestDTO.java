@@ -11,5 +11,5 @@ import javax.validation.constraints.NotEmpty;
 public class AlterarPersonagemRequestDTO extends PersonagemDTO {
     @NotEmpty
     @Schema(description = "Código identificador único do personagem", type = "string", required = true)
-    private String uuid;
+    private String id;
 }

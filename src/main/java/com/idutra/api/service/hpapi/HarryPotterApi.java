@@ -16,5 +16,9 @@ public interface HarryPotterApi {
     @GET
     @Path("/houses/{houseId}")
     Response getHouseById(@QueryParam("key") String key, @PathParam("houseId") String houseId);
+
+    @GET
+    @Path("/characters")
+    Response getCharacters(@QueryParam("key") String key, @QueryParam("name") String name);
 }
 

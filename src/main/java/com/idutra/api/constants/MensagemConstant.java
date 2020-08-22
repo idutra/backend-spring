@@ -16,8 +16,12 @@ public interface MensagemConstant {
     String MSG_SQL_CONSTRAINT_EXCEPTION = "sqlexception.constraint.error.message";
     String MSG_REST_PERSONAGEM_EXCLUIDO_SUCESSO = "entity.personagem.remove.successfull.message";
     String MSG_INT_POTTER_API_ERROR = "integracao.potterapi.error.message";
-    String MSG_INT_POTTER_API_HOUSE_NOT_FOUND = "integracao.potterapi.housenotfound.error.message";
+    String MSG_INT_POTTER_API_CHAR_NOT_FOUND = "integracao.potterapi.char.notfound.message";
+    String MSG_INT_POTTER_API_CHAR_HOUSE_INVALID = "integracao.potterapi.charhouse.invalid.message";
+    String MSG_INT_POTTER_API_HOUSE_INVALID = "integracao.potterapi.house.invalid.message";
+
     String MSG_PERSONAGEM_NOT_FOUND = "entity.personagem.notfound.message";
     String MSG_LISTA_PERSONAGEM_EMPTY = "entity.lista.personagem.empty.message";
-    String MSG_UPDATE_PERSONAGEM_ERROR = "entity.update.personagem.error.message";
+    String MSG_UPDATE_PERSONAGEM_NAME_ERROR = "entity.update.personagem.name.error.message";
+    String MSG_UPDATE_PERSONAGEM_HOUSE_ERROR = "entity.update.personagem.name.error.message";
 }

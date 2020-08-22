@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,8 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import static com.idutra.api.constants.MensagemConstant.DOC_TAG_CHAR;
 
 @Profile({"dev", "test"})
 @Configuration
@@ -55,8 +58,11 @@ public class SwaggerConfig {
                         .title(this.mensagemComponente.get("swagger.title"))
                         .version(this.appBuildVersion)
                         .contact(new Contact().name("Igor Dutra").email("igor.p.dutra87@gmail.com").url("https://github.com/idutra"))
-                        .description("")
+                        .description("Esta API tem por objetivo prover interfaces de comunicação REST para inserir, atualizar, excluir e consultar personagens do mundo de Harry Potter" +
+                                "\nEsta API faz integração com o [PotterApi] (https://www.potterapi.com/) para validar as informações inseridas")
                         .termsOfService("http://swagger.io/terms/")
-                        .license(new License().name("Apache 2.0").url("http://springdoc.org")));
+                        .license(new License().name("Apache 2.0").url("http://springdoc.org")))
+                .addTagsItem(new Tag().name(DOC_TAG_CHAR).description("Gerenciamento de Personagens. " +
+                        "\nEste tópico tem por objetivo manter um personagem da API em uma base de dados interno."));
     }
 }
