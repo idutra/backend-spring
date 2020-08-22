@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 
 @Data
+@Schema(type = "object", description = "Representação do request de alterar.")
 public class AlterarPersonagemRequestDTO extends PersonagemDTO {
     @NotEmpty
     @Schema(description = "Código identificador único do personagem", type = "string", required = true)

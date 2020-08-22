@@ -6,8 +6,9 @@ import com.idutra.api.model.dto.rest.Personagem;
 import com.idutra.api.model.dto.rest.PersonagemDTO;
 import com.idutra.api.model.dto.rest.request.AlterarPersonagemRequestDTO;
 import com.idutra.api.model.dto.rest.response.AtualizarPersonagemResponseDTO;
-import com.idutra.api.model.dto.rest.response.ConsultarPersonagemResponseDTO;
 import com.idutra.api.model.dto.rest.response.CriarPersonagemResponseDTO;
+import com.idutra.api.model.dto.rest.response.ListarPersonagemResponseDTO;
+import com.idutra.api.model.dto.rest.response.PersonagemResponseDTO;
 import com.idutra.api.repository.PersonagemRepository;
 import com.idutra.api.service.hpapi.HarryPotterApiService;
 import lombok.extern.log4j.Log4j2;
@@ -84,15 +85,22 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
         return String.format("Personagem {%s}, uuid {%s} excluído", personagem.getName(), personagem.getUuid());
     }
 
-    public ConsultarPersonagemResponseDTO consultarPersonagens(String name, String role, String school, String houseId, String patronus, String uuid) {
+    public ListarPersonagemResponseDTO listarPersonagens(String name, String role, String school, String houseId, String patronus, String uuid) {
         Personagem personagem = new Personagem(name, role, school, houseId, patronus, uuid);
         Example<Personagem> example = Example.of(personagem);
         List<Personagem> pList = (List<Personagem>) this.repository.findAll(example);
-        ConsultarPersonagemResponseDTO consultarPersonagemResponseDTO = new ConsultarPersonagemResponseDTO();
-        List<PersonagemDTO> dtoList = pList.stream().map(p -> {
-            return this.instanceModelMapper(null).map(p, PersonagemDTO.class);
+        ListarPersonagemResponseDTO listarPersonagemDTO = new ListarPersonagemResponseDTO();
+        List<PersonagemResponseDTO> dtoList = pList.stream().map(p -> {
+            return this.instanceModelMapper(null).map(p, PersonagemResponseDTO.class);
         }).collect(Collectors.toList());
-        consultarPersonagemResponseDTO.setPersonagens(dtoList);
-        return consultarPersonagemResponseDTO;
+        listarPersonagemDTO.setPersonagens(dtoList);
+        return listarPersonagemDTO;
+    }
+
+    public PersonagemDTO consultarPersonagem(String uuid) {
+        log.info("Iniciando a pesquisa pelo personagem código {}", uuid);
+        Personagem personagem = this.repository.findById(uuid).orElseThrow(() -> new ObjetoNaoEncontradoException("", uuid));
+        log.info("Consulta realizada com sucesso..");
+        return this.instanceModelMapper(null).map(personagem, PersonagemDTO.class);
     }
 }

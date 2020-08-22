@@ -1,11 +1,9 @@
 package com.idutra.api.model.dto.rest.response;
 
-import com.idutra.api.model.dto.rest.PersonagemDTO;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class ConsultarPersonagemResponseDTO {
-    List<PersonagemDTO> personagens;
+@Schema(type = "object", description = "Representação do response de consultar personagem.")
+public class ConsultarPersonagemResponseDTO extends PersonagemResponseDTO {
 }
