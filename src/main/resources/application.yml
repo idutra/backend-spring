@@ -1,0 +1,56 @@
+app:
+  build:
+    version: '@project.version@'
+  mensagem:
+    appI18nEnable: false
+api:
+  key: $2a$10$4rR6HDnTbU8dJjzUaIbhMum.CTiCi9VDp8xvkOvOCNyy/7MU3aQqi
+  url:
+    service: https://www.potterapi.com/v1/
+logging:
+  level:
+    com:
+      totvs:
+        tfs:
+          integracao:
+            dict: DEBUG
+    root: INFO
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr(${PID:-
+            }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan}
+            %clr(:){faint} %clr(%X{correlationId}){magenta} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}'
+    file: '%d{yyyy-MM-dd HH:mm:ss.SSS} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr(${PID:-
+            }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan}
+            %clr(:){faint} %clr(%X{correlationId}){magenta} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}'
+server:
+  port: 3000
+  servlet:
+    context-path: /idutra
+spring:
+  datasource:
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    password: teste@123
+    url: jdbc:sqlserver://localhost;DatabaseName=id_api;sendStringParametersAsUnicode=false
+    username: sa
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+    show-sql: true
+  profiles:
+    active: dev
+springdoc:
+  api-docs:
+    enabled: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  packagesToScan: com.idutra.api.rest.controller
+  swagger-ui:
+    disable-swagger-default-url: true
+  writer-with-default-pretty-printer: true

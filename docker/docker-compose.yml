@@ -1,0 +1,24 @@
+version: "3.5"
+
+services:
+  id_mssql:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    container_name: id_mssqlserver
+    hostname: id_mssqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: teste@123
+      MSSQL_AGENT_ENABLED: "true"
+    ports:
+      - "1433:1433"
+    volumes:
+      - "id-sqlserver:/var/lib/sqlserver/data"
+  dict_mssqlscripts:
+    image: mcr.microsoft.com/mssql-tools
+    container_name: id_mssqlscripts
+    hostname: id_mssqlscripts
+    depends_on:
+      - id_mssql
+    command: /bin/bash -c 'until /opt/mssql-tools/bin/sqlcmd -S id_mssqlserver -U sa -P "teste@123" -Q "create database id_api"; do sleep 5; done'
+volumes:
+  dict-sqlserver:
