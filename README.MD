@@ -81,8 +81,8 @@ Levantar a aplicação, depois abrir o terminal na pasta do projeto e executar o
 >  redoc-cli bundle -o doc/idutra-api.html http://localhost:3000/idutra/v3/api-docs
 
 ## Configurações Externas
-Para o funcionamento da integração com o site [potterapi] (https://www.potterapi.com) é necessário realizada a parametrização da `key`
-no arquivo [appllication.yml] (/src/main/resources/application.yaml) marcado entre `[]`, conforme exemplificado abaixo:
+Para o funcionamento da integração com o site [potterapi](https://www.potterapi.com) é necessário realizada a parametrização da `key`
+no arquivo [appllication.yml](src/main/resources/application.yaml) marcado entre `[]`, conforme exemplificado abaixo:
 ```
 api:
   key: [INSIRA_SUA_CHAVE_AQUI]
