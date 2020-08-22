@@ -29,6 +29,11 @@ public interface MensagemConstant {
     String MSG_REQUEST_NOT_NULL = "object.request.notnull.message";
     String MSG_PERSONAGEM_NOT_NULL = "object.personagem.notnull.message";
 
+    String MSG_PROPRIEDADE_DESCONHECIDA = "message.property_unrecognized";
+    String MSG_REQUEST_BODY_MISSING = "requestBody.invalid.message";
+    String MSG_REQUEST_PARAM_MISSING = "requestParam.missing.message";
+    String MISSING_HEADER_MESSAGE = "exception.missing.header.message";
+
     /*Atributos*/
     String MSG_PERSONAGEM_ID_NOT_EMPTY = "atributo.id.notempty.message";
     String MSG_PERSONAGEM_NAME_NOT_EMPTY = "atributo.name.notempty.message";

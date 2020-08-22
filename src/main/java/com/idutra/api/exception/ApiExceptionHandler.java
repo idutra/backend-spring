@@ -29,6 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.idutra.api.constants.MensagemConstant.MISSING_HEADER_MESSAGE;
+import static com.idutra.api.constants.MensagemConstant.MSG_PROPRIEDADE_DESCONHECIDA;
+import static com.idutra.api.constants.MensagemConstant.MSG_REQUEST_BODY_MISSING;
+import static com.idutra.api.constants.MensagemConstant.MSG_REQUEST_PARAM_MISSING;
 import static com.idutra.api.constants.MensagemConstant.MSG_SQL_CONSTRAINT_EXCEPTION;
 
 
@@ -53,13 +57,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         if (ex.getCause() != null) {
             if (ex.getCause() instanceof UnrecognizedPropertyException) {
                 String nomePropriedade = ((UnrecognizedPropertyException) ex.getCause()).getPropertyName();
-                response = new ResponseErroDTO(this.mensagemComponente.get("MSG_PROPRIEDADE_DESCONHECIDA", nomePropriedade),
+                response = new ResponseErroDTO(this.mensagemComponente.get(MSG_PROPRIEDADE_DESCONHECIDA, nomePropriedade),
                         ExceptionUtils.getRootCauseMessage(ex));
             } else {
                 response = new ResponseErroDTO(ex.getCause().getMessage(), ExceptionUtils.getRootCauseMessage(ex));
             }
         } else {
-            response = new ResponseErroDTO(this.mensagemComponente.get("MSG_REQUEST_BODY_MISSING"),
+            response = new ResponseErroDTO(this.mensagemComponente.get(MSG_REQUEST_BODY_MISSING),
                     ExceptionUtils.getRootCauseMessage(ex));
         }
 
@@ -86,7 +90,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMissingServletRequestPart(MissingServletRequestPartException ex,
                                                                      HttpHeaders headers, HttpStatus status,
                                                                      WebRequest request) {
-        ResponseErroDTO response = new ResponseErroDTO(this.mensagemComponente.get("MSG_REQUEST_PARAM_MISSING"),
+        ResponseErroDTO response = new ResponseErroDTO(this.mensagemComponente.get(MSG_REQUEST_PARAM_MISSING),
                 ExceptionUtils.getRootCauseMessage(ex));
         return super.handleExceptionInternal(ex, response, headers, status, request);
     }
@@ -113,7 +117,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(MissingRequestHeaderException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ResponseEntity<Object> missingRequestHeaderException(MissingRequestHeaderException ex) {
-        return this.getRespostaErroPadrao("MISSING_HEADER_MESSAGE", ExceptionUtils.getRootCauseMessage(ex));
+        return this.getRespostaErroPadrao(MISSING_HEADER_MESSAGE, ExceptionUtils.getRootCauseMessage(ex));
     }
 
     @ExceptionHandler({ValidationException.class})

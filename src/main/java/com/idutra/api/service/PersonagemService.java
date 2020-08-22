@@ -80,14 +80,8 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
      */
     @Transactional
     public AtualizarPersonagemResponseDTO atualizarPersonagem(@Valid @NotNull(message = MSG_REQUEST_NOT_NULL) AlterarPersonagemRequestDTO personagemDTO) {
-        Personagem personagem = this.repository.findPersonagemByIdAndName(personagemDTO.getId(), personagemDTO.getName()).map(p -> {
+        Personagem personagem = this.repository.findById(personagemDTO.getId()).map(p -> {
             log.info("Validando as informações a serem alteradas");
-            if (!p.getName().equals(personagemDTO.getName())) {
-                throw new ValidacaoNegocioException(MSG_UPDATE_PERSONAGEM_NAME_ERROR, p.getName());
-            }
-            if (!p.getHouseId().equals(personagemDTO.getHouseId())) {
-                throw new ValidacaoNegocioException(MSG_UPDATE_PERSONAGEM_HOUSE_ERROR, p.getHouseId());
-            }
             log.info("Alterando os valores do personagem");
             p.setPatronus(personagemDTO.getPatronus());
             p.setRole(personagemDTO.getRole());
@@ -97,7 +91,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
         }).orElseThrow(() -> new ObjetoNaoEncontradoException(MSG_PERSONAGEM_NOT_FOUND, personagemDTO.getId()));
         log.info("Atualizando as informações do personagem");
         this.repository.save(personagem);
-        log.info("Personagem {} uuid {} atualizado...", personagemDTO.getName(), personagemDTO.getId());
+        log.info("Personagem {} uuid {} atualizado...", personagem.getName(), personagemDTO.getId());
         return this.instanceModelMapper(null).map(personagem, AtualizarPersonagemResponseDTO.class);
     }
 

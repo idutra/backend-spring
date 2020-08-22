@@ -65,7 +65,11 @@ public class HarryPotterController extends AbstractController {
     }
 
     @PostMapping(path = URI_CHAR_CREATE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE, consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Criar Personagem", description = "Criar um novo personagem na base interna",
+    @Operation(summary = "Criar Personagem", description = "Criar um novo personagem na base interna" +
+            "\nPara criação de um novo persão são condideradas as seguintes regras:" +
+            "\n - Não é permitido inserir um personagem que esteja presente na api potterapi" +
+            "\n - Não é permitido inserir um personagem que esteja sendo vinculado a uma casa diferente da casa que está vinculado no potterapi" +
+            "\n - Não é permitido inserir um personagem vinculando a uma casa que não exista no potterapi.",
             operationId = "incluirPersonagem", tags = {DOC_TAG_CHAR},
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
                     schema = @Schema(implementation = CriarPersonagemRequestDTO.class),
@@ -92,7 +96,9 @@ public class HarryPotterController extends AbstractController {
     }
 
     @PutMapping(path = URI_CHAR_UPDATE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE, consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Alterar Personagem", description = "Altera informações de um personagem já cadastrado na base interna",
+    @Operation(summary = "Alterar Personagem", description = "Altera informações de um personagem já cadastrado na base interna" +
+            "\n - Para alterar um personagem será necessário informar o `id` do personagem." +
+            "\n - É permitido apenas a alteração das informações: `role`,`school` e `patronus`, caso sejam informados outros dados a serem alterados, será retornado exceção",
             operationId = "alterarPersonagem", tags = {DOC_TAG_CHAR},
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
                     schema = @Schema(implementation = AlterarPersonagemRequestDTO.class),
@@ -119,7 +125,9 @@ public class HarryPotterController extends AbstractController {
     }
 
     @DeleteMapping(path = URI_CHAR_REMOVE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Remover Personagem", description = "Faz a exclusão de um registro de personagem na base interna",
+    @Operation(summary = "Remover Personagem", description = "Faz a exclusão de um registro de personagem na base interna" +
+            "\n - Não é possível realizar a exclusão de um personagem que não exista na base interna." +
+            "\n - Para realizar a exclusão de um personagem é necessário informar o `id` do personagem.",
             operationId = "removerPersonagem", tags = {DOC_TAG_CHAR},
             parameters = {
                     @Parameter(name = "id", in = ParameterIn.PATH, schema = @Schema(type = "string"),
@@ -146,7 +154,8 @@ public class HarryPotterController extends AbstractController {
     }
 
     @GetMapping(path = URI_CHAR_GET)
-    @Operation(summary = "Consultar Personagem", description = "Realiza a consulta de um personagem com base no código id",
+    @Operation(summary = "Consultar Personagem", description = "Realiza a consulta de um personagem com base no código `id`" +
+            "\n - Serão retornadas informações de personagem que existem apenas na base interna.",
             operationId = "consultarPersonagem", tags = {DOC_TAG_CHAR},
             parameters = {
                     @Parameter(name = "id", in = ParameterIn.PATH, schema = @Schema(type = "string"),
@@ -173,7 +182,9 @@ public class HarryPotterController extends AbstractController {
     }
 
     @GetMapping(path = URI_CHAR)
-    @Operation(summary = "Listar Personagens", description = "Consulta uma lista de personagens de acordo com o filtro",
+    @Operation(summary = "Listar Personagens", description = "Responsável por listar personagens cadastrados na base interna." +
+            "\n - Caso não seja informado nenhum parâmetro no filtro, serão retornados todos os personagens cadastrados na base interna" +
+            "\n - Caso seja informado um ou mais parâmetros no filtro, serão retornados apenas os personagens que possuirem as informações do filtro.",
             operationId = "listarPersonagens", tags = {DOC_TAG_CHAR}
     )
     @ApiResponses(value = {
