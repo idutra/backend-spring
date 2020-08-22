@@ -11,10 +11,6 @@ public class IntegracaoApiHpException extends AbstractException {
         super(mensagem);
     }
 
-    public IntegracaoApiHpException(String message, String... args) {
-        super(message, args);
-    }
-
     public IntegracaoApiHpException(String message, Throwable cause, String... args) {
         super(message, cause, args);
     }

@@ -29,6 +29,9 @@ import java.util.Arrays;
 import static com.idutra.api.constants.MensagemConstant.MSG_INT_POTTER_API_CHAR_NOT_FOUND;
 import static com.idutra.api.constants.MensagemConstant.MSG_INT_POTTER_API_ERROR;
 import static com.idutra.api.constants.MensagemConstant.MSG_INT_POTTER_API_HOUSE_INVALID;
+import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_HOUSE_ID_NOT_EMPTY;
+import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_NOT_NULL;
+import static com.idutra.api.constants.MensagemConstant.MSG_RESPONSE_NOT_NULL;
 
 @Log4j2
 @Component
@@ -53,7 +56,7 @@ public class HarryPotterApiService {
         this.objectMapper = objectMapper;
     }
 
-    public CharactersApiDTO consultarPersonagemApi(@NotNull Personagem personagem) throws JsonProcessingException {
+    public CharactersApiDTO consultarPersonagemApi(@NotNull(message = MSG_PERSONAGEM_NOT_NULL) Personagem personagem) throws JsonProcessingException {
         log.info("Iniciando a consulta de personagens");
         Response response = this.getCharacter(personagem);
         String jsonRetorno = this.extractReponse(response);
@@ -61,7 +64,7 @@ public class HarryPotterApiService {
         return Arrays.stream(objectMapper.readValue(jsonRetorno, CharactersApiDTO[].class)).findFirst().orElseThrow(() -> new ObjetoNaoEncontradoException(MSG_INT_POTTER_API_CHAR_NOT_FOUND, personagem.getName()));
     }
 
-    public HouseApiDTO consultarCasaApi(@NotEmpty String houseId) throws JsonProcessingException {
+    public HouseApiDTO consultarCasaApi(@NotEmpty(message = MSG_PERSONAGEM_HOUSE_ID_NOT_EMPTY) String houseId) throws JsonProcessingException {
         log.info("Iniciando a comunicação com a api para consultar a casa [{}]", houseId);
         Response response = this.getHouseResponse(houseId);
         String jsonRetorno = this.extractReponse(response);
@@ -81,24 +84,27 @@ public class HarryPotterApiService {
         try {
             return Arrays.stream(objectMapper.readValue(json, HouseApiDTO[].class)).findFirst().orElseThrow(() -> new ObjetoNaoEncontradoException(MSG_INT_POTTER_API_HOUSE_INVALID, houseId));
         } catch (JsonProcessingException e) {
+            log.debug("Ocorreu um erro durante a conversão do json {} para o objeto {}", json, HouseApiDTO.class.getSimpleName());
             throw new IntegracaoApiHpException(MSG_INT_POTTER_API_HOUSE_INVALID, new Throwable(json), houseId);
         }
     }
 
-    private String extractReponse(@NotNull Response response) {
+    private String extractReponse(@NotNull(message = MSG_RESPONSE_NOT_NULL) Response response) {
         try {
             Preconditions.checkNotNull(response);
             HttpStatus status = HttpStatus.valueOf(response.getStatus());
             switch (status) {
                 case CREATED:
                 case OK:
+                    log.debug("Requisição realizada com sucesso [{} - {}]", status.value(), status.getReasonPhrase());
                     return response.readEntity(String.class);
                 default:
                     ErroDTO erro = response.readEntity(ErroDTO.class);
+                    log.debug("Ocorreu um erro durante a requisição [{} - {}]: [{}]", status.value(), status.getReasonPhrase(), erro.getError());
                     throw new IntegracaoApiHpException(MSG_INT_POTTER_API_ERROR, erro);
             }
         } catch (ProcessingException ex) {
-            log.debug("Falha na integração com a API PotterApi: {}", ExceptionUtils.getRootCauseMessage(ex));
+            log.debug(MSG_INT_POTTER_API_ERROR, ExceptionUtils.getRootCauseMessage(ex));
             throw new IntegracaoApiHpException(ExceptionUtils.getRootCauseMessage(ex));
         }
     }

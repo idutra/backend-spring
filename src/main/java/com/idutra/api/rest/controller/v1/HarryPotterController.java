@@ -122,8 +122,8 @@ public class HarryPotterController extends AbstractController {
     @Operation(summary = "Remover Personagem", description = "Faz a exclusão de um registro de personagem na base interna",
             operationId = "removerPersonagem", tags = {DOC_TAG_CHAR},
             parameters = {
-                    @Parameter(name = "uuid", in = ParameterIn.PATH, schema = @Schema(type = "string"),
-                            required = true, description = "Código uuid do personagem na base interna")
+                    @Parameter(name = "id", in = ParameterIn.PATH, schema = @Schema(type = "string"),
+                            required = true, description = "Código id do personagem na base interna")
             }
     )
     @ApiResponses(value = {
@@ -140,17 +140,17 @@ public class HarryPotterController extends AbstractController {
                     content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ResponseErroDTO.class))})
     })
-    public ResponseEntity<String> removerPersonagem(@NotEmpty @PathVariable("uuid") String codigo) {
+    public ResponseEntity<String> removerPersonagem(@NotEmpty @PathVariable("id") String codigo) {
         this.service.removerPersonagem(codigo);
         return ok(this.mensagemComponente.get(MSG_REST_PERSONAGEM_EXCLUIDO_SUCESSO, codigo));
     }
 
     @GetMapping(path = URI_CHAR_GET)
-    @Operation(summary = "Consultar Personagem", description = "Realiza a consulta de um personagem com base no código uuid",
+    @Operation(summary = "Consultar Personagem", description = "Realiza a consulta de um personagem com base no código id",
             operationId = "consultarPersonagem", tags = {DOC_TAG_CHAR},
             parameters = {
-                    @Parameter(name = "uuid", in = ParameterIn.PATH, schema = @Schema(type = "string"),
-                            required = true, description = "Código uuid do personagem")
+                    @Parameter(name = "id", in = ParameterIn.PATH, schema = @Schema(type = "string"),
+                            required = true, description = "Código id do personagem")
             }
     )
     @ApiResponses(value = {
@@ -167,7 +167,7 @@ public class HarryPotterController extends AbstractController {
                     content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ResponseErroDTO.class))})
     })
-    public ResponseEntity<PersonagemDTO> consultarPersonagem(@Valid @PathVariable("uuid") String codigo) {
+    public ResponseEntity<PersonagemDTO> consultarPersonagem(@Valid @PathVariable("id") String codigo) {
         PersonagemDTO responseDTO = this.service.consultarPersonagem(codigo);
         return ok(responseDTO);
     }
@@ -190,13 +190,13 @@ public class HarryPotterController extends AbstractController {
                     content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ResponseErroDTO.class))})
     })
-    public ResponseEntity<ListarPersonagemResponseDTO> listarPersonagens(@RequestParam(required = false, value = "name") String name,
-                                                                         @RequestParam(required = false, value = "role") String role,
-                                                                         @RequestParam(required = false, value = "school") String school,
-                                                                         @RequestParam(required = false, value = "houseId") String houseId,
-                                                                         @RequestParam(required = false, value = "patronus") String patronus,
-                                                                         @RequestParam(required = false, value = "uuid") String uuid) {
-        ListarPersonagemResponseDTO responseDTO = this.service.listarPersonagens(name, role, school, houseId, patronus, uuid);
+    public ResponseEntity<ListarPersonagemResponseDTO> listarPersonagens(@RequestParam(required = false, value = "name") @Schema(description = "Nome do personagem") String name,
+                                                                         @RequestParam(required = false, value = "role") @Schema(description = "Função do personagem") String role,
+                                                                         @RequestParam(required = false, value = "school") @Schema(description = "Escola do personagem") String school,
+                                                                         @RequestParam(required = false, value = "houseId") @Schema(description = "Código da casa do personagem") String houseId,
+                                                                         @RequestParam(required = false, value = "patronus") @Schema(description = "Patronus do personagem") String patronus,
+                                                                         @RequestParam(required = false, value = "id") @Schema(description = "Código identificador do personagem") String id) {
+        ListarPersonagemResponseDTO responseDTO = this.service.listarPersonagens(name, role, school, houseId, patronus, id);
         return ok(responseDTO);
     }
 }

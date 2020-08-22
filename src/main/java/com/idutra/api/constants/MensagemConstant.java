@@ -23,5 +23,19 @@ public interface MensagemConstant {
     String MSG_PERSONAGEM_NOT_FOUND = "entity.personagem.notfound.message";
     String MSG_LISTA_PERSONAGEM_EMPTY = "entity.lista.personagem.empty.message";
     String MSG_UPDATE_PERSONAGEM_NAME_ERROR = "entity.update.personagem.name.error.message";
-    String MSG_UPDATE_PERSONAGEM_HOUSE_ERROR = "entity.update.personagem.name.error.message";
+    String MSG_UPDATE_PERSONAGEM_HOUSE_ERROR = "entity.update.personagem.house.error.message";
+
+    String MSG_RESPONSE_NOT_NULL = "object.response.notnull.message";
+    String MSG_REQUEST_NOT_NULL = "object.request.notnull.message";
+    String MSG_PERSONAGEM_NOT_NULL = "object.personagem.notnull.message";
+
+    /*Atributos*/
+    String MSG_PERSONAGEM_ID_NOT_EMPTY = "atributo.id.notempty.message";
+    String MSG_PERSONAGEM_NAME_NOT_EMPTY = "atributo.name.notempty.message";
+    String MSG_PERSONAGEM_ROLE_NOT_EMPTY = "atributo.role.notempty.message";
+    String MSG_PERSONAGEM_SCHOOL_NOT_EMPTY = "atributo.school.notempty.message";
+    String MSG_PERSONAGEM_HOUSE_ID_NOT_EMPTY = "atributo.house.notempty.message";
+    String MSG_PERSONAGEM_PATRONUS_NOT_EMPTY = "atributo.patronus.notempty.message";
+    String MSG_PERSONAGEM_DH_CREATION_NOT_NULL = "atributo.datahoracriacao.notnull.message";
+    String MSG_PERSONAGEM_DH_ULT_ATU_NOT_NULL = "atributo.datahoraultatualizacao.notnull.message";
 }

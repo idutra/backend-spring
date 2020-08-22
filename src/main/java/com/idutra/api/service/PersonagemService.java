@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -29,7 +30,10 @@ import java.util.stream.Collectors;
 
 import static com.idutra.api.constants.MensagemConstant.MSG_INT_POTTER_API_CHAR_HOUSE_INVALID;
 import static com.idutra.api.constants.MensagemConstant.MSG_LISTA_PERSONAGEM_EMPTY;
+import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_ID_NOT_EMPTY;
 import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_NOT_FOUND;
+import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_NOT_NULL;
+import static com.idutra.api.constants.MensagemConstant.MSG_REQUEST_NOT_NULL;
 import static com.idutra.api.constants.MensagemConstant.MSG_UPDATE_PERSONAGEM_HOUSE_ERROR;
 import static com.idutra.api.constants.MensagemConstant.MSG_UPDATE_PERSONAGEM_NAME_ERROR;
 
@@ -57,7 +61,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
      * @throws JsonProcessingException
      */
     @Transactional
-    public CriarPersonagemResponseDTO salvarPersonagem(@Valid @NotNull PersonagemDTO personagemDTO) throws ValidacaoNegocioException, JsonProcessingException {
+    public CriarPersonagemResponseDTO salvarPersonagem(@Valid @NotNull(message = MSG_REQUEST_NOT_NULL) PersonagemDTO personagemDTO) throws ValidacaoNegocioException, JsonProcessingException {
         log.info("Iniciando processo para salvar personagem [{}]", personagemDTO.getName());
         Personagem personagem = this.instanceModelMapper(null).map(personagemDTO, Personagem.class);
         this.validarInclusaoPersonagem(personagem);
@@ -75,7 +79,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
      * @return
      */
     @Transactional
-    public AtualizarPersonagemResponseDTO atualizarPersonagem(@Valid @NotNull AlterarPersonagemRequestDTO personagemDTO) {
+    public AtualizarPersonagemResponseDTO atualizarPersonagem(@Valid @NotNull(message = MSG_REQUEST_NOT_NULL) AlterarPersonagemRequestDTO personagemDTO) {
         Personagem personagem = this.repository.findPersonagemByIdAndName(personagemDTO.getId(), personagemDTO.getName()).map(p -> {
             log.info("Validando as informações a serem alteradas");
             if (!p.getName().equals(personagemDTO.getName())) {
@@ -104,7 +108,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
      * @param personagem
      * @throws JsonProcessingException
      */
-    private void validarInclusaoPersonagem(@NotNull Personagem personagem) throws JsonProcessingException {
+    private void validarInclusaoPersonagem(@NotNull(message = MSG_PERSONAGEM_NOT_NULL) Personagem personagem) throws JsonProcessingException {
         CharactersApiDTO charactersApiDTO = hpApiService.consultarPersonagemApi(personagem);
         HouseApiDTO houseApiDTO = hpApiService.consultarCasaApi(personagem.getHouseId());
         if (!charactersApiDTO.getHouse().equals(houseApiDTO.getName())) {
@@ -119,7 +123,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
      * @param id
      */
     @Transactional
-    public void removerPersonagem(String id) {
+    public void removerPersonagem(@NotEmpty(message = MSG_PERSONAGEM_ID_NOT_EMPTY) String id) {
         log.info("Iniciando a exclusão do personagem uuid {}", id);
         Personagem personagem = this.repository.findById(id).orElseThrow(() -> new ObjetoNaoEncontradoException(MSG_PERSONAGEM_NOT_FOUND, id));
         this.repository.delete(personagem);
@@ -161,7 +165,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
      * @param id
      * @return
      */
-    public PersonagemDTO consultarPersonagem(String id) {
+    public PersonagemDTO consultarPersonagem(@NotEmpty(message = MSG_PERSONAGEM_ID_NOT_EMPTY) String id) {
         log.info("Iniciando a pesquisa pelo personagem código {}", id);
         Personagem personagem = this.repository.findById(id).orElseThrow(() -> new ObjetoNaoEncontradoException(MSG_PERSONAGEM_NOT_FOUND, id));
         log.info("Consulta realizada com sucesso..");

@@ -16,6 +16,15 @@ import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_DH_CREATION_NOT_NULL;
+import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_DH_ULT_ATU_NOT_NULL;
+import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_HOUSE_ID_NOT_EMPTY;
+import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_ID_NOT_EMPTY;
+import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_NAME_NOT_EMPTY;
+import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_PATRONUS_NOT_EMPTY;
+import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_ROLE_NOT_EMPTY;
+import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_SCHOOL_NOT_EMPTY;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,21 +36,21 @@ import java.util.UUID;
 public class Personagem {
 
     @Id
-    @NotNull
+    @NotEmpty(message = MSG_PERSONAGEM_ID_NOT_EMPTY)
     private String id;
-    @NotEmpty
+    @NotEmpty(message = MSG_PERSONAGEM_NAME_NOT_EMPTY)
     private String name;
-    @NotEmpty
+    @NotEmpty(message = MSG_PERSONAGEM_ROLE_NOT_EMPTY)
     private String role;
-    @NotEmpty
+    @NotEmpty(message = MSG_PERSONAGEM_SCHOOL_NOT_EMPTY)
     private String school;
-    @NotEmpty
+    @NotEmpty(message = MSG_PERSONAGEM_HOUSE_ID_NOT_EMPTY)
     private String houseId;
-    @NotEmpty
+    @NotEmpty(message = MSG_PERSONAGEM_PATRONUS_NOT_EMPTY)
     private String patronus;
-    @NotNull
+    @NotNull(message = MSG_PERSONAGEM_DH_CREATION_NOT_NULL)
     private OffsetDateTime dataHoraCriacao;
-    @NotNull
+    @NotNull(message = MSG_PERSONAGEM_DH_ULT_ATU_NOT_NULL)
     private OffsetDateTime dataHoraUltAtualizacao;
 
     @PrePersist
