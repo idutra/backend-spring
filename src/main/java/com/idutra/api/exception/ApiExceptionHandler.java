@@ -138,7 +138,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleIntegracaoApiHpException(IntegracaoApiHpException ex) {
         String mensagemDetalhada = ex.getErroDTO() != null ? ex.getErroDTO().getError() : ExceptionUtils.getRootCauseMessage(ex);
-        return this.getRespostaErroPadrao(HttpStatus.BAD_REQUEST, ex.getMessage(), mensagemDetalhada, ex.getArgs());
+        if (ex.getErroDTO() != null) {
+            return this.getRespostaErroPadrao(HttpStatus.BAD_REQUEST, ex.getMessage(), mensagemDetalhada, ex.getErroDTO().getError());
+        } else {
+            return this.getRespostaErroPadrao(HttpStatus.BAD_REQUEST, ex.getMessage(), mensagemDetalhada, ex.getArgs());
+        }
     }
 
     private ResponseEntity<Object> getRespostaErroPadrao(String message, String stackMessage, String... params) {
