@@ -117,7 +117,7 @@ public class HarryPotterController extends AbstractController {
         return ok(responseDTO);
     }
 
-    @DeleteMapping(path = URI_CHAR_REMOVE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = URI_CHAR_REMOVE, produces = MimeTypeUtils.TEXT_PLAIN_VALUE)
     @Operation(summary = "Remover Personagem", description = "Faz a exclusão de um registro de personagem na base interna",
             operationId = "removerPersonagem", tags = {DOC_TAG_CHAR},
             parameters = {
@@ -127,7 +127,7 @@ public class HarryPotterController extends AbstractController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso",
-                    content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
+                    content = {@Content(mediaType = MimeTypeUtils.TEXT_PLAIN_VALUE,
                             schema = @Schema(implementation = String.class))}),
             @ApiResponse(responseCode = "400", description = "Erro de validação",
                     content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,

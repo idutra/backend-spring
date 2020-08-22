@@ -107,10 +107,29 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return this.getRespostaErroPadrao("MISSING_HEADER_MESSAGE", ExceptionUtils.getRootCauseMessage(ex));
     }
 
-    @ExceptionHandler(ValidationException.class)
+    @ExceptionHandler({ValidationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleValidationException(ValidationException ex) {
         return this.getRespostaErroPadrao(ex.getMessage(), ExceptionUtils.getRootCauseMessage(ex));
+    }
+
+    @ExceptionHandler(ObjetoNaoEncontradoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Object> handleObjetoNaoEncontradoException(ObjetoNaoEncontradoException exception) {
+        return this.getRespostaErroPadrao(HttpStatus.NOT_FOUND, exception.getMessage(), ExceptionUtils.getRootCauseMessage(exception), exception.getArgs());
+    }
+
+    @ExceptionHandler(ValidacaoNegocioException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleValidacaoNegocioException(ValidacaoNegocioException ex) {
+        return this.getRespostaErroPadrao(HttpStatus.BAD_REQUEST, ex.getMessage(), ExceptionUtils.getRootCauseMessage(ex), ex.getArgs());
+    }
+
+    @ExceptionHandler(IntegracaoApiHpException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleIntegracaoApiHpException(IntegracaoApiHpException ex) {
+        String mensagemDetalhada = ex.getErroDTO() != null ? ex.getErroDTO().getError() : ExceptionUtils.getRootCauseMessage(ex);
+        return this.getRespostaErroPadrao(HttpStatus.BAD_REQUEST, ex.getMessage(), mensagemDetalhada, ex.getArgs());
     }
 
     private ResponseEntity<Object> getRespostaErroPadrao(String message, String stackMessage, String... params) {

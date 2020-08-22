@@ -15,7 +15,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -39,8 +38,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
         this.hpApiService = hpApiService;
     }
 
-    @Transactional
-    public CriarPersonagemResponseDTO salvarPersonagem(@Valid @NotNull PersonagemDTO personagemDTO) {
+    public CriarPersonagemResponseDTO salvarPersonagem(@Valid @NotNull PersonagemDTO personagemDTO) throws ValidacaoNegocioException {
         log.info("Iniciando processo para salvar personagem [{}]", personagemDTO.getName());
         Personagem personagem = this.instanceModelMapper(null).map(personagemDTO, Personagem.class);
         this.verificarCasaPersonagem(personagem.getHouseId());
@@ -50,7 +48,6 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
         return this.instanceModelMapper(null).map(personagem, CriarPersonagemResponseDTO.class);
     }
 
-    @Transactional
     public AtualizarPersonagemResponseDTO atualizarPersonagem(@Valid @NotNull AlterarPersonagemRequestDTO personagemDTO) {
         Personagem personagem = this.repository.findPersonagemByUuidAndName(personagemDTO.getUuid(), personagemDTO.getName()).map(p -> {
             log.info("Validando as informações a serem alteradas");
@@ -76,24 +73,25 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
         hpApiService.consultarCasaPersonagem(codigoCasa);
     }
 
-    @Transactional
-    public String removerPersonagem(String codigoUuid) {
+    public void removerPersonagem(String codigoUuid) {
         log.info("Iniciando a exclusão do personagem uuid {}", codigoUuid);
         Personagem personagem = this.repository.findById(codigoUuid).orElseThrow(() -> new ObjetoNaoEncontradoException("", codigoUuid));
         this.repository.delete(personagem);
         log.info("Operação realizada com sucesso..");
-        return String.format("Personagem {%s}, uuid {%s} excluído", personagem.getName(), personagem.getUuid());
     }
 
     public ListarPersonagemResponseDTO listarPersonagens(String name, String role, String school, String houseId, String patronus, String uuid) {
-        Personagem personagem = new Personagem(name, role, school, houseId, patronus, uuid);
+        Personagem personagem = new Personagem(name, role, school, houseId, patronus, uuid, null, null);
+        log.info("Iniciando a pesquisa de personagen com o filtro {} ", personagem.toString());
         Example<Personagem> example = Example.of(personagem);
         List<Personagem> pList = (List<Personagem>) this.repository.findAll(example);
+        log.info("{} personagens encontrados", pList.size());
         ListarPersonagemResponseDTO listarPersonagemDTO = new ListarPersonagemResponseDTO();
         List<PersonagemResponseDTO> dtoList = pList.stream().map(p -> {
             return this.instanceModelMapper(null).map(p, PersonagemResponseDTO.class);
         }).collect(Collectors.toList());
         listarPersonagemDTO.setPersonagens(dtoList);
+        log.info("Listagem de personagens finalizada com sucesso");
         return listarPersonagemDTO;
     }
 

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.logging.log4j.util.Strings;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
@@ -30,6 +31,7 @@ public class Personagem {
     @NotNull
     private String uuid;
     @NotEmpty
+    @Column(unique = true)
     private String name;
     @NotEmpty
     private String role;
@@ -44,15 +46,6 @@ public class Personagem {
     @NotNull
     private OffsetDateTime dataHoraUltAtualizacao;
 
-    public Personagem(String name, String role, String school, String houseId, String patronus, String uuid) {
-        this.name = name;
-        this.role = role;
-        this.school = school;
-        this.houseId = houseId;
-        this.patronus = patronus;
-        this.uuid = uuid;
-    }
-
     @PrePersist
     public void prePersist() {
         if (Strings.isEmpty(this.uuid)) {
@@ -60,17 +53,5 @@ public class Personagem {
         }
         this.dataHoraCriacao = OffsetDateTime.now();
         this.dataHoraUltAtualizacao = OffsetDateTime.now();
-    }
-
-    public Personagem(String name,
-                      String role,
-                      String school,
-                      String houseId,
-                      String patronus) {
-        this.name = name;
-        this.role = role;
-        this.school = school;
-        this.houseId = houseId;
-        this.patronus = patronus;
     }
 }

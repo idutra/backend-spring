@@ -5,18 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 
 @Data
-public class HouseApiDTO {
-    private String _id;
-    private String name;
-    private String mascot;
-    private String headOfHouse;
-    private String houseGhost;
-    private String founder;
-    private String __v;
-    private String school;
-    private Object[] members;
-    private Object[] values;
-    private Object[] colors;
+public class HouseErroDTO {
+
+    String message;
+    String name;
+    String stringValue;
+    String kind;
+    String value;
+    String path;
+
 
     public String toJson() {
         try {

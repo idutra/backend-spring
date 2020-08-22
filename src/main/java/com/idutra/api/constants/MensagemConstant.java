@@ -13,5 +13,7 @@ public interface MensagemConstant {
     String DOC_TAG_CHAR = "Personagem";
 
     /*Messages*/
-    String MSG_REST_PERSONAGEM_EXCLUIDO_SUCESSO = "";//Todo: adicionar no messages.properties
+    String MSG_REST_PERSONAGEM_EXCLUIDO_SUCESSO = "entity.personagem.remove.successfull";//Todo: adicionar no messages.properties
+    String MSG_INT_POTTER_API_ERROR = "integracao.potterapi.error.message";
+    String MSG_INT_POTTER_API_HOUSE_NOT_FOUND = "integracao.potterapi.housenotfound.error.message";
 }
