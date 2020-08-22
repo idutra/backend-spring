@@ -67,7 +67,7 @@ Para gerar a documentação no padrão OpenAPI 3.0 é necessário executar o com
 A Geração da documentação é realizada através do comando maven abaixo
 > mvn install -P gerar-doc-openapi
 
-A documentação será criada na pasta `/src/main/resources/doc/idutra-api.v${project.version}.html`
+A documentação será criada na pasta [`/src/main/resources/doc/idutra-api.v${project.version}.html`](src/main/resources/doc/)
 
 ### Processo Manual
 Para gerar a documentação manualmente, basta exetutar os passos a seguir
@@ -78,5 +78,5 @@ Caso ainda não tenha redoc-cli instalado, executar o comando abaixo no terminal
 
 #### Exportar documentação
 Levantar a aplicação, depois abrir o terminal na pasta do projeto e executar o código abaixo
->  redoc-cli bundle -o doc/idutra-api.html http://localhost:8088/idutra/v3/api-docs
+>  redoc-cli bundle -o doc/idutra-api.html http://localhost:3000/idutra/v3/api-docs
 
