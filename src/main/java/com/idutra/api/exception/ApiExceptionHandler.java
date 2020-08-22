@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.idutra.api.constants.MensagemConstant.MSG_SQL_CONSTRAINT_EXCEPTION;
+
 
 @Log4j2
 @RestControllerAdvice
@@ -89,6 +91,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, response, headers, status, request);
     }
 
+    @ExceptionHandler(org.hibernate.exception.ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> hibernateConstraintViolationException(org.hibernate.exception.ConstraintViolationException e) {
+        return this.getRespostaErroPadrao(MSG_SQL_CONSTRAINT_EXCEPTION, ExceptionUtils.getRootCauseMessage(e));
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> constraintViolationException(ConstraintViolationException e) {
@@ -100,6 +108,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ResponseErroDTO response = new ResponseErroDTO(mensagensErro.toString(), ExceptionUtils.getRootCauseMessage(e));
         return ResponseEntity.badRequest().body(response);
     }
+
 
     @ExceptionHandler(MissingRequestHeaderException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -24,6 +24,10 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.idutra.api.constants.MensagemConstant.MSG_LISTA_PERSONAGEM_EMPTY;
+import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_NOT_FOUND;
+import static com.idutra.api.constants.MensagemConstant.MSG_UPDATE_PERSONAGEM_ERROR;
+
 @Log4j2
 @Service
 @Validated
@@ -52,7 +56,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
         Personagem personagem = this.repository.findPersonagemByUuidAndName(personagemDTO.getUuid(), personagemDTO.getName()).map(p -> {
             log.info("Validando as informações a serem alteradas");
             if (!p.getName().equals(personagemDTO.getName())) {
-                throw new ValidacaoNegocioException("", p.getName());
+                throw new ValidacaoNegocioException(MSG_UPDATE_PERSONAGEM_ERROR, p.getName());
             }
             this.verificarCasaPersonagem(personagemDTO.getHouseId());
             log.info("Alterando os valores do personagem");
@@ -62,7 +66,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
             p.setSchool(personagemDTO.getSchool());
             p.setDataHoraUltAtualizacao(OffsetDateTime.now());
             return p;
-        }).orElseThrow(() -> new ObjetoNaoEncontradoException("", personagemDTO.getUuid()));
+        }).orElseThrow(() -> new ObjetoNaoEncontradoException(MSG_PERSONAGEM_NOT_FOUND, personagemDTO.getUuid()));
         log.info("Atualizando as informações do personagem");
         this.repository.save(personagem);
         log.info("Personagem {} uuid {} atualizado...", personagemDTO.getName(), personagemDTO.getUuid());
@@ -75,7 +79,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
 
     public void removerPersonagem(String codigoUuid) {
         log.info("Iniciando a exclusão do personagem uuid {}", codigoUuid);
-        Personagem personagem = this.repository.findById(codigoUuid).orElseThrow(() -> new ObjetoNaoEncontradoException("", codigoUuid));
+        Personagem personagem = this.repository.findById(codigoUuid).orElseThrow(() -> new ObjetoNaoEncontradoException(MSG_PERSONAGEM_NOT_FOUND, codigoUuid));
         this.repository.delete(personagem);
         log.info("Operação realizada com sucesso..");
     }
@@ -90,6 +94,9 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
         List<PersonagemResponseDTO> dtoList = pList.stream().map(p -> {
             return this.instanceModelMapper(null).map(p, PersonagemResponseDTO.class);
         }).collect(Collectors.toList());
+        if (dtoList.isEmpty()) {
+            throw new ObjetoNaoEncontradoException(MSG_LISTA_PERSONAGEM_EMPTY);
+        }
         listarPersonagemDTO.setPersonagens(dtoList);
         log.info("Listagem de personagens finalizada com sucesso");
         return listarPersonagemDTO;
@@ -97,7 +104,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
 
     public PersonagemDTO consultarPersonagem(String uuid) {
         log.info("Iniciando a pesquisa pelo personagem código {}", uuid);
-        Personagem personagem = this.repository.findById(uuid).orElseThrow(() -> new ObjetoNaoEncontradoException("", uuid));
+        Personagem personagem = this.repository.findById(uuid).orElseThrow(() -> new ObjetoNaoEncontradoException(MSG_PERSONAGEM_NOT_FOUND, uuid));
         log.info("Consulta realizada com sucesso..");
         return this.instanceModelMapper(null).map(personagem, PersonagemDTO.class);
     }

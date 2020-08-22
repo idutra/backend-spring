@@ -117,7 +117,7 @@ public class HarryPotterController extends AbstractController {
         return ok(responseDTO);
     }
 
-    @DeleteMapping(path = URI_CHAR_REMOVE, produces = MimeTypeUtils.TEXT_PLAIN_VALUE)
+    @DeleteMapping(path = URI_CHAR_REMOVE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     @Operation(summary = "Remover Personagem", description = "Faz a exclusão de um registro de personagem na base interna",
             operationId = "removerPersonagem", tags = {DOC_TAG_CHAR},
             parameters = {

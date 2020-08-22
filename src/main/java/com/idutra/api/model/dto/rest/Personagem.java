@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.logging.log4j.util.Strings;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
@@ -31,7 +30,6 @@ public class Personagem {
     @NotNull
     private String uuid;
     @NotEmpty
-    @Column(unique = true)
     private String name;
     @NotEmpty
     private String role;
