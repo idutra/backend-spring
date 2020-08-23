@@ -11,6 +11,7 @@ import com.idutra.api.service.hpapi.model.ErroDTO;
 import com.idutra.api.service.hpapi.model.HouseApiDTO;
 import com.idutra.api.utils.ApiClientFactory;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.modelmapper.ModelMapper;
@@ -51,12 +52,13 @@ public class HarryPotterApiService {
                                  final @Value("${api.url.service}") String urlApi) {
         this.key = apiKey;
         this.urlApi = urlApi;
-        this.harryPotterApi = ApiClientFactory.createApiClient(urlApi, HarryPotterApi.class);
+        this.harryPotterApi = ApiClientFactory.createApiClient(this.urlApi, HarryPotterApi.class);
         this.modelMapper = modelMapper;
         this.objectMapper = objectMapper;
     }
 
-    public CharactersApiDTO consultarPersonagemApi(@NotNull(message = MSG_PERSONAGEM_NOT_NULL) Personagem personagem) throws JsonProcessingException {
+    @SneakyThrows
+    public CharactersApiDTO consultarPersonagemApi(@NotNull(message = MSG_PERSONAGEM_NOT_NULL) Personagem personagem) {
         log.info("Iniciando a consulta de personagens");
         Response response = this.getCharacter(personagem);
         String jsonRetorno = this.extractReponse(response);
@@ -64,7 +66,7 @@ public class HarryPotterApiService {
         return Arrays.stream(objectMapper.readValue(jsonRetorno, CharactersApiDTO[].class)).findFirst().orElseThrow(() -> new ObjetoNaoEncontradoException(MSG_INT_POTTER_API_CHAR_NOT_FOUND, personagem.getName()));
     }
 
-    public HouseApiDTO consultarCasaApi(@NotEmpty(message = MSG_PERSONAGEM_HOUSE_ID_NOT_EMPTY) String houseId) throws JsonProcessingException {
+    public HouseApiDTO consultarCasaApi(@NotEmpty(message = MSG_PERSONAGEM_HOUSE_ID_NOT_EMPTY) String houseId) {
         log.info("Iniciando a comunicação com a api para consultar a casa [{}]", houseId);
         Response response = this.getHouseResponse(houseId);
         String jsonRetorno = this.extractReponse(response);
@@ -73,7 +75,7 @@ public class HarryPotterApiService {
     }
 
     private Response getCharacter(Personagem personagem) {
-        return this.harryPotterApi.getCharacters(this.key, personagem.getName());
+        return this.harryPotterApi.getCharactersByName(this.key, personagem.getName());
     }
 
     private Response getHouseResponse(String houseId) {

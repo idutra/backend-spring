@@ -1,5 +1,6 @@
 package com.idutra.api.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.idutra.api.component.MensagemComponente;
 import com.idutra.api.model.dto.rest.response.ResponseErroDTO;
@@ -136,6 +137,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleValidacaoNegocioException(ValidacaoNegocioException ex) {
         return this.getRespostaErroPadrao(HttpStatus.BAD_REQUEST, ex.getMessage(), ExceptionUtils.getRootCauseMessage(ex), ex.getArgs());
+    }
+
+    @ExceptionHandler(JsonProcessingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleJsonProcessingException(JsonProcessingException ex) {
+        return this.getRespostaErroPadrao(HttpStatus.BAD_REQUEST, ex.getMessage(), ExceptionUtils.getRootCauseMessage(ex));
     }
 
     @ExceptionHandler(IntegracaoApiHpException.class)

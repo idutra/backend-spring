@@ -10,6 +10,18 @@ import com.google.common.collect.Lists;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 
 public class ApiClientFactory {
+
+    public static final JsonMapper JSON_MAPPER;
+
+    static {
+        JSON_MAPPER = (JsonMapper) new JsonMapper()
+                .registerModule(new JaxbAnnotationModule())
+                .registerModule(new JavaTimeModule())
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                .disable(SerializationFeature.INDENT_OUTPUT)
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
+
     public static <T> T createApiClient(String apiBaseAddress, Class<T> clazz) {
         JsonMapper jsonMapper = (JsonMapper) new JsonMapper()
                 .registerModule(new JaxbAnnotationModule())

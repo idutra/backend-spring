@@ -6,6 +6,7 @@ import com.idutra.api.exception.ValidacaoNegocioException;
 import com.idutra.api.model.dto.rest.Personagem;
 import com.idutra.api.model.dto.rest.PersonagemDTO;
 import com.idutra.api.model.dto.rest.request.AlterarPersonagemRequestDTO;
+import com.idutra.api.model.dto.rest.request.ListarPersonagemRequestDTO;
 import com.idutra.api.model.dto.rest.response.AtualizarPersonagemResponseDTO;
 import com.idutra.api.model.dto.rest.response.CriarPersonagemResponseDTO;
 import com.idutra.api.model.dto.rest.response.ListarPersonagemResponseDTO;
@@ -42,11 +43,11 @@ import static com.idutra.api.constants.MensagemConstant.MSG_UPDATE_PERSONAGEM_NA
 @Validated
 public class PersonagemService extends GenericService<PersonagemRepository, Personagem, String> {
 
+
     private HarryPotterApiService hpApiService;
 
     @Autowired
-    public PersonagemService(PersonagemRepository repository,
-                             HarryPotterApiService hpApiService) {
+    public PersonagemService(PersonagemRepository repository, HarryPotterApiService hpApiService) {
         super(repository);
         this.hpApiService = hpApiService;
     }
@@ -61,7 +62,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
      * @throws JsonProcessingException
      */
     @Transactional
-    public CriarPersonagemResponseDTO salvarPersonagem(@Valid @NotNull(message = MSG_REQUEST_NOT_NULL) PersonagemDTO personagemDTO) throws ValidacaoNegocioException, JsonProcessingException {
+    public CriarPersonagemResponseDTO salvarPersonagem(@Valid @NotNull(message = MSG_REQUEST_NOT_NULL) PersonagemDTO personagemDTO) {
         log.info("Iniciando processo para salvar personagem [{}]", personagemDTO.getName());
         Personagem personagem = this.instanceModelMapper(null).map(personagemDTO, Personagem.class);
         this.validarInclusaoPersonagem(personagem);
@@ -82,6 +83,12 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
     public AtualizarPersonagemResponseDTO atualizarPersonagem(@Valid @NotNull(message = MSG_REQUEST_NOT_NULL) AlterarPersonagemRequestDTO personagemDTO) {
         Personagem personagem = this.repository.findById(personagemDTO.getId()).map(p -> {
             log.info("Validando as informações a serem alteradas");
+            if (!p.getName().equals(personagemDTO.getName())) {
+                throw new ValidacaoNegocioException(MSG_UPDATE_PERSONAGEM_NAME_ERROR, p.getName());
+            }
+            if (!p.getHouseId().equals(personagemDTO.getHouseId())) {
+                throw new ValidacaoNegocioException(MSG_UPDATE_PERSONAGEM_HOUSE_ERROR, p.getHouseId());
+            }
             log.info("Alterando os valores do personagem");
             p.setPatronus(personagemDTO.getPatronus());
             p.setRole(personagemDTO.getRole());
@@ -102,7 +109,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
      * @param personagem
      * @throws JsonProcessingException
      */
-    private void validarInclusaoPersonagem(@NotNull(message = MSG_PERSONAGEM_NOT_NULL) Personagem personagem) throws JsonProcessingException {
+    protected void validarInclusaoPersonagem(@NotNull(message = MSG_PERSONAGEM_NOT_NULL) Personagem personagem) {
         CharactersApiDTO charactersApiDTO = hpApiService.consultarPersonagemApi(personagem);
         HouseApiDTO houseApiDTO = hpApiService.consultarCasaApi(personagem.getHouseId());
         if (!charactersApiDTO.getHouse().equals(houseApiDTO.getName())) {
@@ -127,16 +134,11 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
     /**
      * Método responsável por retornar uma listage de personagem com base no filtro informado
      *
-     * @param name
-     * @param role
-     * @param school
-     * @param houseId
-     * @param patronus
-     * @param uuid
-     * @return ListarPersonagemResponseDTO
+     * @param personagemDTO
+     * @return
      */
-    public ListarPersonagemResponseDTO listarPersonagens(String name, String role, String school, String houseId, String patronus, String uuid) {
-        Personagem personagem = new Personagem(name, role, school, houseId, patronus, uuid, null, null);
+    public ListarPersonagemResponseDTO listarPersonagens(ListarPersonagemRequestDTO personagemDTO) {
+        Personagem personagem = this.instanceModelMapper(null).map(personagemDTO, Personagem.class);
         log.info("Iniciando a pesquisa de personagen com o filtro {} ", personagem.toString());
         Example<Personagem> example = Example.of(personagem);
         List<Personagem> pList = (List<Personagem>) this.repository.findAll(example);

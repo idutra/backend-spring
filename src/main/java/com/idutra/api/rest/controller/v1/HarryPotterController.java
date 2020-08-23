@@ -5,6 +5,7 @@ import com.idutra.api.component.MensagemComponente;
 import com.idutra.api.model.dto.rest.PersonagemDTO;
 import com.idutra.api.model.dto.rest.request.AlterarPersonagemRequestDTO;
 import com.idutra.api.model.dto.rest.request.CriarPersonagemRequestDTO;
+import com.idutra.api.model.dto.rest.request.ListarPersonagemRequestDTO;
 import com.idutra.api.model.dto.rest.response.AtualizarPersonagemResponseDTO;
 import com.idutra.api.model.dto.rest.response.ConsultarPersonagemResponseDTO;
 import com.idutra.api.model.dto.rest.response.CriarPersonagemResponseDTO;
@@ -31,12 +32,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.BeanParam;
 
 import static com.idutra.api.constants.MensagemConstant.DOC_TAG_CHAR;
 import static com.idutra.api.constants.MensagemConstant.MSG_REST_PERSONAGEM_EXCLUIDO_SUCESSO;
@@ -201,13 +202,8 @@ public class HarryPotterController extends AbstractController {
                     content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ResponseErroDTO.class))})
     })
-    public ResponseEntity<ListarPersonagemResponseDTO> listarPersonagens(@RequestParam(required = false, value = "name") @Schema(description = "Nome do personagem") String name,
-                                                                         @RequestParam(required = false, value = "role") @Schema(description = "Função do personagem") String role,
-                                                                         @RequestParam(required = false, value = "school") @Schema(description = "Escola do personagem") String school,
-                                                                         @RequestParam(required = false, value = "houseId") @Schema(description = "Código da casa do personagem") String houseId,
-                                                                         @RequestParam(required = false, value = "patronus") @Schema(description = "Patronus do personagem") String patronus,
-                                                                         @RequestParam(required = false, value = "id") @Schema(description = "Código identificador do personagem") String id) {
-        ListarPersonagemResponseDTO responseDTO = this.service.listarPersonagens(name, role, school, houseId, patronus, id);
+    public ResponseEntity<ListarPersonagemResponseDTO> listarPersonagens(@BeanParam ListarPersonagemRequestDTO personagemFiltroDTO) {
+        ListarPersonagemResponseDTO responseDTO = this.service.listarPersonagens(personagemFiltroDTO);
         return ok(responseDTO);
     }
 }

@@ -6,13 +6,12 @@ app:
 api:
   key: 123213
   url:
-    service: https://www.potterapi.com/v1/
+    service: http://localhost:7000
 logging:
   level:
     com:
       idutra:
-        api:
-          DEBUG
+        api: DEBUG
     root: INFO
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr(${PID:-
@@ -27,29 +26,20 @@ server:
     context-path: /idutra
 spring:
   datasource:
-    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    password: teste@123
-    url: jdbc:sqlserver://localhost;DatabaseName=id_api;sendStringParametersAsUnicode=false
+    driverClassName: org.h2.Driver
+    initialization-mode: always
+    password: ''
+    url: jdbc:h2:mem:testdb
     username: sa
   jackson:
     deserialization:
       fail-on-unknown-properties: true
   jpa:
     hibernate:
-      ddl-auto: update
-    open-in-view: false
+      ddl-auto: create-drop
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.SQLServerDialect
+        dialect: org.hibernate.dialect.H2Dialect
     show-sql: true
-  profiles:
-    active: dev
-springdoc:
-  api-docs:
-    enabled: true
-  default-consumes-media-type: application/json
-  default-produces-media-type: application/json
-  packagesToScan: com.idutra.api.rest.controller
-  swagger-ui:
-    disable-swagger-default-url: true
-  writer-with-default-pretty-printer: true
+    profiles:
+      active: test
