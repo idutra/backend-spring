@@ -63,7 +63,7 @@ public class HarryPotterApiService {
         Response response = this.getCharacter(personagem);
         String jsonRetorno = this.extractReponse(response);
         log.info("Response: [{}]", jsonRetorno);
-        return Arrays.stream(objectMapper.readValue(jsonRetorno, CharactersApiDTO[].class)).findFirst().orElseThrow(() -> new ObjetoNaoEncontradoException(MSG_INT_POTTER_API_CHAR_NOT_FOUND, personagem.getName()));
+        return this.converterResponseCharactersApi(jsonRetorno, personagem);
     }
 
     public HouseApiDTO consultarCasaApi(@NotEmpty(message = MSG_PERSONAGEM_HOUSE_ID_NOT_EMPTY) String houseId) {
@@ -80,6 +80,15 @@ public class HarryPotterApiService {
 
     private Response getHouseResponse(String houseId) {
         return this.harryPotterApi.getHouseById(this.key, houseId);
+    }
+
+    private CharactersApiDTO converterResponseCharactersApi(String json, Personagem personagem) {
+        try {
+            return Arrays.stream(objectMapper.readValue(json, CharactersApiDTO[].class)).findFirst().orElseThrow(() -> new ObjetoNaoEncontradoException(MSG_INT_POTTER_API_CHAR_NOT_FOUND, personagem.getName()));
+        } catch (JsonProcessingException e) {
+            log.debug("Ocorreu um erro durante a conversão do json {} para o objeto {}", json, HouseApiDTO.class.getSimpleName());
+            throw new IntegracaoApiHpException(MSG_INT_POTTER_API_ERROR, new Throwable(json));
+        }
     }
 
     private HouseApiDTO converterResponseHouseApi(String json, String houseId) {
