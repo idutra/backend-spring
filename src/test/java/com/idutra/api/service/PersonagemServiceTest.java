@@ -13,6 +13,7 @@ import com.idutra.api.model.dto.rest.response.ListarPersonagemResponseDTO;
 import com.idutra.api.repository.PersonagemRepository;
 import joptsimple.internal.Strings;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,11 @@ public class PersonagemServiceTest extends AbstractContextTest {
     private void setUp() {
         this.repository.deleteAll();
         super.iniciarWireMockServerPotterApi();
+    }
+
+    @AfterEach
+    private void finalizar() {
+        this.wireMockServer.stop();
     }
 
     @Test
