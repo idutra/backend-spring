@@ -148,9 +148,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
         List<Personagem> pList = (List<Personagem>) this.repository.findAll(example);
         log.info("{} personagens encontrados", pList.size());
         ListarPersonagemResponseDTO listarPersonagemDTO = new ListarPersonagemResponseDTO();
-        List<PersonagemResponseDTO> dtoList = pList.stream().map(p -> {
-            return this.instanceModelMapper(null).map(p, PersonagemResponseDTO.class);
-        }).collect(Collectors.toList());
+        List<PersonagemResponseDTO> dtoList = pList.stream().map(p -> this.instanceModelMapper(null).map(p, PersonagemResponseDTO.class)).collect(Collectors.toList());
         if (dtoList.isEmpty()) {
             throw new ObjetoNaoEncontradoException(MSG_LISTA_PERSONAGEM_EMPTY);
         }
