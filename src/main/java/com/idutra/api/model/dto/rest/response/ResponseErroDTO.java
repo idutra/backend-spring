@@ -9,6 +9,8 @@ import lombok.Data;
 @AllArgsConstructor
 @Schema(type = "object", description = "Representação do responde de erros.")
 public class ResponseErroDTO implements RestDTO {
+    @Schema(description = "Mensagem de erro apresentada", type = "string")
     private String mensagemErro;
+    @Schema(description = "Mensagem de erro detalhada", type = "string")
     private String detalheErro;
 }

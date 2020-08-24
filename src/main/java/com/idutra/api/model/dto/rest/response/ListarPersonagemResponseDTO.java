@@ -8,5 +8,6 @@ import java.util.List;
 @Data
 @Schema(type = "object", description = "Representação do response de listar personagem.")
 public class ListarPersonagemResponseDTO {
+    @Schema(description = "lista de personagens", required = true)
     List<PersonagemResponseDTO> personagens;
 }

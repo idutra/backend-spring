@@ -9,6 +9,7 @@ import com.idutra.api.model.dto.rest.request.ListarPersonagemRequestDTO;
 import com.idutra.api.model.dto.rest.response.AtualizarPersonagemResponseDTO;
 import com.idutra.api.model.dto.rest.response.ConsultarPersonagemResponseDTO;
 import com.idutra.api.model.dto.rest.response.CriarPersonagemResponseDTO;
+import com.idutra.api.model.dto.rest.response.DeleteResponseDTO;
 import com.idutra.api.model.dto.rest.response.ListarPersonagemResponseDTO;
 import com.idutra.api.model.dto.rest.response.ResponseErroDTO;
 import com.idutra.api.service.PersonagemService;
@@ -125,33 +126,32 @@ public class HarryPotterController extends AbstractController {
         return ok(responseDTO);
     }
 
-    @DeleteMapping(path = URI_CHAR_REMOVE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Remover Personagem", description = "Faz a exclusão de um registro de personagem na base interna" +
-            "\n - Não é possível realizar a exclusão de um personagem que não exista na base interna." +
-            "\n - Para realizar a exclusão de um personagem é necessário informar o `id` do personagem.",
-            operationId = "removerPersonagem", tags = {DOC_TAG_CHAR},
+    @DeleteMapping(path = {URI_CHAR_REMOVE}, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Remover Personagem", description = "Remove um personagem da base interna.",
+            operationId = "removerPersonagem", tags = DOC_TAG_CHAR,
             parameters = {
                     @Parameter(name = "id", in = ParameterIn.PATH, schema = @Schema(type = "string"),
-                            required = true, description = "Código id do personagem na base interna")
+                            required = true, description = "Código identificador de personagem")
             }
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso",
-                    content = {@Content(mediaType = MimeTypeUtils.TEXT_PLAIN_VALUE,
-                            schema = @Schema(implementation = String.class))}),
-            @ApiResponse(responseCode = "400", description = "Erro de validação",
-                    content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ResponseErroDTO.class))}),
-            @ApiResponse(responseCode = "404", description = "Não encontrado",
-                    content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ResponseErroDTO.class))}),
-            @ApiResponse(responseCode = "500", description = "Erro interno",
-                    content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ResponseErroDTO.class))})
+            @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso", content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = DeleteResponseDTO.class))}),
+            @ApiResponse(responseCode = "400", description = "Erro de validação", content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ResponseErroDTO.class))}),
+            @ApiResponse(responseCode = "401", description = "Não autorizado", content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ResponseErroDTO.class))}),
+            @ApiResponse(responseCode = "403", description = "Acesso proibido ao usuário", content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ResponseErroDTO.class))}),
+            @ApiResponse(responseCode = "404", description = "Não encontrado", content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ResponseErroDTO.class))}),
+            @ApiResponse(responseCode = "500", description = "Erro interno", content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ResponseErroDTO.class))})
     })
-    public ResponseEntity<String> removerPersonagem(@NotEmpty @PathVariable("id") String codigo) {
-        this.service.removerPersonagem(codigo);
-        return ok(this.mensagemComponente.get(MSG_REST_PERSONAGEM_EXCLUIDO_SUCESSO, codigo));
+    public ResponseEntity<DeleteResponseDTO> removerPersonagem(@NotEmpty @PathVariable("id") String codigo) {
+        DeleteResponseDTO responseDTO = this.service.removerPersonagem(codigo);
+        responseDTO.setMensagem(this.mensagemComponente.get(MSG_REST_PERSONAGEM_EXCLUIDO_SUCESSO, codigo));
+        return ok(responseDTO);
     }
 
     @GetMapping(path = URI_CHAR_GET)
@@ -177,8 +177,10 @@ public class HarryPotterController extends AbstractController {
                     content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ResponseErroDTO.class))})
     })
-    public ResponseEntity<PersonagemDTO> consultarPersonagem(@Valid @PathVariable("id") String codigo) {
+    public ResponseEntity<PersonagemDTO> consultarPersonagem(@Valid @PathVariable("id") String codigo) throws InterruptedException {
+        log.info(" >>> Iniciando consulta");
         PersonagemDTO responseDTO = this.service.consultarPersonagem(codigo);
+        log.info(">>> Finalizando cache");
         return ok(responseDTO);
     }
 

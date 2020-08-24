@@ -11,7 +11,6 @@ import com.idutra.api.service.hpapi.model.ErroDTO;
 import com.idutra.api.service.hpapi.model.HouseApiDTO;
 import com.idutra.api.utils.ApiClientFactory;
 import lombok.Getter;
-import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.modelmapper.ModelMapper;
@@ -57,7 +56,6 @@ public class HarryPotterApiService {
         this.objectMapper = objectMapper;
     }
 
-    @SneakyThrows
     public CharactersApiDTO consultarPersonagemApi(@NotNull(message = MSG_PERSONAGEM_NOT_NULL) Personagem personagem) {
         log.info("Iniciando a consulta de personagens");
         Response response = this.getCharacter(personagem);
@@ -74,7 +72,7 @@ public class HarryPotterApiService {
         return this.converterResponseHouseApi(jsonRetorno, houseId);
     }
 
-    private Response getCharacter(Personagem personagem) {
+    public Response getCharacter(Personagem personagem) {
         return this.harryPotterApi.getCharactersByName(this.key, personagem.getName());
     }
 
@@ -86,7 +84,7 @@ public class HarryPotterApiService {
         try {
             return Arrays.stream(objectMapper.readValue(json, CharactersApiDTO[].class)).findFirst().orElseThrow(() -> new ObjetoNaoEncontradoException(MSG_INT_POTTER_API_CHAR_NOT_FOUND, personagem.getName()));
         } catch (JsonProcessingException e) {
-            log.debug("Ocorreu um erro durante a conversão do json {} para o objeto {}", json, HouseApiDTO.class.getSimpleName());
+            log.debug("Ocorreu um erro durante a conversão do json {} para o objeto {}", json, CharactersApiDTO.class.getSimpleName());
             throw new IntegracaoApiHpException(MSG_INT_POTTER_API_ERROR, new Throwable(json));
         }
     }

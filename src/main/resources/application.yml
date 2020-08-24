@@ -4,7 +4,7 @@ app:
   mensagem:
     appI18nEnable: false
 api:
-  key: 123213
+  key: $2a$10$4rR6HDnTbU8dJjzUaIbhMum.CTiCi9VDp8xvkOvOCNyy/7MU3aQqi
   url:
     service: https://www.potterapi.com/v1/
 logging:

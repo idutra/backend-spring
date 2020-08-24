@@ -9,6 +9,7 @@ import com.idutra.api.model.dto.rest.request.AlterarPersonagemRequestDTO;
 import com.idutra.api.model.dto.rest.request.ListarPersonagemRequestDTO;
 import com.idutra.api.model.dto.rest.response.AtualizarPersonagemResponseDTO;
 import com.idutra.api.model.dto.rest.response.CriarPersonagemResponseDTO;
+import com.idutra.api.model.dto.rest.response.DeleteResponseDTO;
 import com.idutra.api.model.dto.rest.response.ListarPersonagemResponseDTO;
 import com.idutra.api.model.dto.rest.response.PersonagemResponseDTO;
 import com.idutra.api.repository.PersonagemRepository;
@@ -17,6 +18,8 @@ import com.idutra.api.service.hpapi.model.CharactersApiDTO;
 import com.idutra.api.service.hpapi.model.HouseApiDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +32,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.idutra.api.constants.LiteralConstants.PERSONAGEM_CACHE;
 import static com.idutra.api.constants.MensagemConstant.MSG_INT_POTTER_API_CHAR_HOUSE_INVALID;
 import static com.idutra.api.constants.MensagemConstant.MSG_LISTA_PERSONAGEM_EMPTY;
 import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_DUPLICADO;
@@ -81,6 +85,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
      * @return
      */
     @Transactional
+    @CacheEvict(value = PERSONAGEM_CACHE, beforeInvocation = true, allEntries = true)
     public AtualizarPersonagemResponseDTO atualizarPersonagem(@Valid @NotNull(message = MSG_REQUEST_NOT_NULL) AlterarPersonagemRequestDTO personagemDTO) {
         Personagem personagem = this.repository.findById(personagemDTO.getId()).map(p -> {
             log.info("Validando as informações a serem alteradas");
@@ -128,11 +133,13 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
      * @param id
      */
     @Transactional
-    public void removerPersonagem(@NotEmpty(message = MSG_PERSONAGEM_ID_NOT_EMPTY) String id) {
+    @CacheEvict(value = PERSONAGEM_CACHE, beforeInvocation = true, allEntries = true)
+    public DeleteResponseDTO removerPersonagem(@NotEmpty(message = MSG_PERSONAGEM_ID_NOT_EMPTY) String id) {
         log.info("Iniciando a exclusão do personagem uuid {}", id);
         Personagem personagem = this.repository.findById(id).orElseThrow(() -> new ObjetoNaoEncontradoException(MSG_PERSONAGEM_NOT_FOUND, id));
         this.repository.delete(personagem);
         log.info("Operação realizada com sucesso..");
+        return this.instanceModelMapper(null).map(personagem,DeleteResponseDTO.class);
     }
 
     /**
@@ -163,6 +170,7 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
      * @param id
      * @return
      */
+    @Cacheable(PERSONAGEM_CACHE)
     public PersonagemDTO consultarPersonagem(@NotEmpty(message = MSG_PERSONAGEM_ID_NOT_EMPTY) String id) {
         log.info("Iniciando a pesquisa pelo personagem código {}", id);
         Personagem personagem = this.repository.findById(id).orElseThrow(() -> new ObjetoNaoEncontradoException(MSG_PERSONAGEM_NOT_FOUND, id));

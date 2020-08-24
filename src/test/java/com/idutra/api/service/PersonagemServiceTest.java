@@ -11,6 +11,7 @@ import com.idutra.api.model.dto.rest.response.AtualizarPersonagemResponseDTO;
 import com.idutra.api.model.dto.rest.response.CriarPersonagemResponseDTO;
 import com.idutra.api.model.dto.rest.response.ListarPersonagemResponseDTO;
 import com.idutra.api.repository.PersonagemRepository;
+import com.idutra.api.service.hpapi.model.CharactersApiDTO;
 import joptsimple.internal.Strings;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -66,6 +67,16 @@ public class PersonagemServiceTest extends AbstractContextTest {
     }
 
     @Test
+    void salvarPersonagemNameNotFound() {
+        Personagem personagem = this.getPersonagemMock();
+        this.mockResponseGeneric(new CharactersApiDTO[]{}, HttpMethod.GET, REGEX_GET_CHAR_POTTER_API, HttpStatus.CREATED);
+        this.mockResponseGeneric(this.getHouseApiMock(personagem.getHouseId(), personagem.getHouseId()), HttpMethod.GET, REGEX_GET_HOUSE_API, HttpStatus.CREATED);
+        PersonagemDTO personagemDTO = this.modelMapper.map(personagem, PersonagemDTO.class);
+        personagemDTO.setName(RandomStringUtils.random(8, true, false));
+        assertThrows(ObjetoNaoEncontradoException.class, () -> this.service.salvarPersonagem(personagemDTO));
+    }
+
+    @Test
     void listarPersonagemEmpty() {
         assertThrows(ObjetoNaoEncontradoException.class, () -> this.service.listarPersonagens(new ListarPersonagemRequestDTO()));
     }
@@ -73,41 +84,34 @@ public class PersonagemServiceTest extends AbstractContextTest {
     @Test
     void listarPersonagensFiltroExists() {
         Personagem personagem = this.inserirPersonagemMock();
-        //Listar Todos os Personagens da Base
         ListarPersonagemResponseDTO responseList = assertDoesNotThrow(() -> this.service.listarPersonagens(new ListarPersonagemRequestDTO()));
         assertTrue(!responseList.getPersonagens().isEmpty());
 
-        //Filtrar por Id
         ListarPersonagemRequestDTO filtroIdDTO = new ListarPersonagemRequestDTO();
         filtroIdDTO.setId(personagem.getId());
         responseList = assertDoesNotThrow(() -> this.service.listarPersonagens(new ListarPersonagemRequestDTO()));
         assertTrue(!responseList.getPersonagens().isEmpty());
 
-        //Filtrar por HouseId
         ListarPersonagemRequestDTO filtroHouseIdDTO = new ListarPersonagemRequestDTO();
         filtroHouseIdDTO.setHouseId(personagem.getHouseId());
         responseList = assertDoesNotThrow(() -> this.service.listarPersonagens(filtroHouseIdDTO));
         assertTrue(!responseList.getPersonagens().isEmpty());
 
-        //Filtrar por Name
         ListarPersonagemRequestDTO filtroNameDTO = new ListarPersonagemRequestDTO();
         filtroNameDTO.setName(personagem.getName());
         responseList = assertDoesNotThrow(() -> this.service.listarPersonagens(filtroNameDTO));
         assertTrue(!responseList.getPersonagens().isEmpty());
 
-        //Filtrar por Patronus
         ListarPersonagemRequestDTO filtroPatronusDTO = new ListarPersonagemRequestDTO();
         filtroPatronusDTO.setPatronus(personagem.getPatronus());
         responseList = assertDoesNotThrow(() -> this.service.listarPersonagens(filtroPatronusDTO));
         assertTrue(!responseList.getPersonagens().isEmpty());
 
-        //Filtrar por Role
         ListarPersonagemRequestDTO filtroRoleDTO = new ListarPersonagemRequestDTO();
         filtroRoleDTO.setRole(personagem.getRole());
         responseList = assertDoesNotThrow(() -> this.service.listarPersonagens(filtroRoleDTO));
         assertTrue(!responseList.getPersonagens().isEmpty());
 
-        //Filtrar por School
         ListarPersonagemRequestDTO filtroSchoolDTO = new ListarPersonagemRequestDTO();
         filtroSchoolDTO.setSchool(personagem.getSchool());
         responseList = assertDoesNotThrow(() -> this.service.listarPersonagens(filtroSchoolDTO));
