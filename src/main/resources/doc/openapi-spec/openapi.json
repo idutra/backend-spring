@@ -84,79 +84,18 @@
         }
       }
     },
-    "/api/v1/characters/update" : {
-      "put" : {
+    "/api/v1/characters" : {
+      "get" : {
         "tags" : [ "Personagem" ],
-        "summary" : "Alterar Personagem",
-        "description" : "Altera informações de um personagem já cadastrado na base interna\n - Para alterar um personagem será necessário informar o `id` do personagem.\n - É permitido apenas a alteração das informações: `role`,`school` e `patronus`, caso sejam informados outros dados a serem alterados, será retornado exceção",
-        "operationId" : "alterarPersonagem",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/AlterarPersonagemRequestDTO"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "400" : {
-            "description" : "Erro de validação",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ResponseErroDTO"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Não encontrado",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ResponseErroDTO"
-                }
-              }
-            }
-          },
-          "200" : {
-            "description" : "Operação realizada com sucesso",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/AtualizarPersonagemResponseDTO"
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Erro interno",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ResponseErroDTO"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/characters/delete/{id}" : {
-      "delete" : {
-        "tags" : [ "Personagem" ],
-        "summary" : "Remover Personagem",
-        "description" : "Faz a exclusão de um registro de personagem na base interna\n - Não é possível realizar a exclusão de um personagem que não exista na base interna.\n - Para realizar a exclusão de um personagem é necessário informar o `id` do personagem.",
-        "operationId" : "removerPersonagem",
+        "summary" : "Listar Personagens",
+        "description" : "Responsável por listar personagens cadastrados na base interna.\n - Caso não seja informado nenhum parâmetro no filtro, serão retornados todos os personagens cadastrados na base interna\n - Caso seja informado um ou mais parâmetros no filtro, serão retornados apenas os personagens que possuirem as informações do filtro.",
+        "operationId" : "listarPersonagens",
         "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "description" : "Código id do personagem na base interna",
+          "name" : "personagemFiltroDTO",
+          "in" : "query",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "$ref" : "#/components/schemas/ListarPersonagemRequestDTO"
           }
         } ],
         "responses" : {
@@ -180,22 +119,22 @@
               }
             }
           },
-          "200" : {
-            "description" : "Operação realizada com sucesso",
-            "content" : {
-              "text/plain" : {
-                "schema" : {
-                  "type" : "string"
-                }
-              }
-            }
-          },
           "500" : {
             "description" : "Erro interno",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ResponseErroDTO"
+                }
+              }
+            }
+          },
+          "200" : {
+            "description" : "Operação realizada com sucesso",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConsultarPersonagemResponseDTO"
                 }
               }
             }
@@ -262,18 +201,19 @@
         }
       }
     },
-    "/api/v1/characters" : {
-      "get" : {
+    "/api/v1/characters/delete/{id}" : {
+      "delete" : {
         "tags" : [ "Personagem" ],
-        "summary" : "Listar Personagens",
-        "description" : "Responsável por listar personagens cadastrados na base interna.\n - Caso não seja informado nenhum parâmetro no filtro, serão retornados todos os personagens cadastrados na base interna\n - Caso seja informado um ou mais parâmetros no filtro, serão retornados apenas os personagens que possuirem as informações do filtro.",
-        "operationId" : "listarPersonagens",
+        "summary" : "Remover Personagem",
+        "description" : "Faz a exclusão de um registro de personagem na base interna\n - Não é possível realizar a exclusão de um personagem que não exista na base interna.\n - Para realizar a exclusão de um personagem é necessário informar o `id` do personagem.",
+        "operationId" : "removerPersonagem",
         "parameters" : [ {
-          "name" : "personagemFiltroDTO",
-          "in" : "query",
+          "name" : "id",
+          "in" : "path",
+          "description" : "Código id do personagem na base interna",
           "required" : true,
           "schema" : {
-            "$ref" : "#/components/schemas/ListarPersonagemRequestDTO"
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -300,9 +240,69 @@
           "200" : {
             "description" : "Operação realizada com sucesso",
             "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DeleteResponseDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Erro interno",
+            "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ConsultarPersonagemResponseDTO"
+                  "$ref" : "#/components/schemas/ResponseErroDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/characters/update" : {
+      "put" : {
+        "tags" : [ "Personagem" ],
+        "summary" : "Alterar Personagem",
+        "description" : "Altera informações de um personagem já cadastrado na base interna\n - Para alterar um personagem será necessário informar o `id` do personagem.\n - É permitido apenas a alteração das informações: `role`,`school` e `patronus`, caso sejam informados outros dados a serem alterados, será retornado exceção",
+        "operationId" : "alterarPersonagem",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AlterarPersonagemRequestDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "400" : {
+            "description" : "Erro de validação",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResponseErroDTO"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Não encontrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResponseErroDTO"
+                }
+              }
+            }
+          },
+          "200" : {
+            "description" : "Operação realizada com sucesso",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AtualizarPersonagemResponseDTO"
                 }
               }
             }
@@ -359,10 +359,12 @@
         "type" : "object",
         "properties" : {
           "mensagemErro" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Mensagem de erro apresentada"
           },
           "detalheErro" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Mensagem de erro detalhada"
           }
         },
         "description" : "Representação do responde de erros."
@@ -415,6 +417,130 @@
           }
         },
         "description" : "Representação do response de criar personagem."
+      },
+      "ListarPersonagemRequestDTO" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id do personagem"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Nome do personagem"
+          },
+          "role" : {
+            "type" : "string",
+            "description" : "Função do personagem"
+          },
+          "school" : {
+            "type" : "string",
+            "description" : "Escola do personagem"
+          },
+          "houseId" : {
+            "type" : "string",
+            "description" : "Código identificador da casa que o personagem pertence"
+          },
+          "patronus" : {
+            "type" : "string",
+            "description" : "Patronous do personagem"
+          }
+        }
+      },
+      "ConsultarPersonagemResponseDTO" : {
+        "required" : [ "houseId", "name", "patronus", "role", "school" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "Nome do personagem",
+            "example" : "Harry Potter"
+          },
+          "role" : {
+            "type" : "string",
+            "description" : "Função do personagem",
+            "example" : "student"
+          },
+          "school" : {
+            "type" : "string",
+            "description" : "Escola do personagem",
+            "example" : "Hogwarts School of Witchcraft and Wizardry"
+          },
+          "houseId" : {
+            "type" : "string",
+            "description" : "Código identificador da casa que o personagem pertence",
+            "example" : "5a05e2b252f721a3cf2ea33f"
+          },
+          "patronus" : {
+            "type" : "string",
+            "description" : "Patronous do personagem",
+            "example" : "stag"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Código identificador único do personagem criado",
+            "example" : "5a12292a0f5ae10021650d7e"
+          },
+          "dataHoraCriacao" : {
+            "pattern" : "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+            "type" : "string",
+            "description" : "Data/Hora da Criação do personagem em banco de dados",
+            "format" : "date-time"
+          },
+          "dataHoraUltAtualizacao" : {
+            "pattern" : "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+            "type" : "string",
+            "description" : "Data/Hora da ultíma atualização das informações do personagem em banco de dados",
+            "format" : "date-time"
+          }
+        },
+        "description" : "Representação do response de consultar personagem."
+      },
+      "PersonagemDTO" : {
+        "required" : [ "houseId", "name", "patronus", "role", "school" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "Nome do personagem",
+            "example" : "Harry Potter"
+          },
+          "role" : {
+            "type" : "string",
+            "description" : "Função do personagem",
+            "example" : "student"
+          },
+          "school" : {
+            "type" : "string",
+            "description" : "Escola do personagem",
+            "example" : "Hogwarts School of Witchcraft and Wizardry"
+          },
+          "houseId" : {
+            "type" : "string",
+            "description" : "Código identificador da casa que o personagem pertence",
+            "example" : "5a05e2b252f721a3cf2ea33f"
+          },
+          "patronus" : {
+            "type" : "string",
+            "description" : "Patronous do personagem",
+            "example" : "stag"
+          }
+        },
+        "description" : "Representação do request de personagem."
+      },
+      "DeleteResponseDTO" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Código identificador do personagem excluído"
+          },
+          "mensagem" : {
+            "type" : "string",
+            "description" : "Mensagem de retorno da solicitação"
+          }
+        },
+        "description" : "Objeto que representa o resultado da solicitação de exclusão de um personagem"
       },
       "AlterarPersonagemRequestDTO" : {
         "required" : [ "houseId", "id", "name", "patronus", "role", "school" ],
@@ -500,116 +626,6 @@
           }
         },
         "description" : "Representação do response de atualizar personagem."
-      },
-      "PersonagemDTO" : {
-        "required" : [ "houseId", "name", "patronus", "role", "school" ],
-        "type" : "object",
-        "properties" : {
-          "name" : {
-            "type" : "string",
-            "description" : "Nome do personagem",
-            "example" : "Harry Potter"
-          },
-          "role" : {
-            "type" : "string",
-            "description" : "Função do personagem",
-            "example" : "student"
-          },
-          "school" : {
-            "type" : "string",
-            "description" : "Escola do personagem",
-            "example" : "Hogwarts School of Witchcraft and Wizardry"
-          },
-          "houseId" : {
-            "type" : "string",
-            "description" : "Código identificador da casa que o personagem pertence",
-            "example" : "5a05e2b252f721a3cf2ea33f"
-          },
-          "patronus" : {
-            "type" : "string",
-            "description" : "Patronous do personagem",
-            "example" : "stag"
-          }
-        },
-        "description" : "Representação do request de personagem."
-      },
-      "ListarPersonagemRequestDTO" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Id do personagem"
-          },
-          "name" : {
-            "type" : "string",
-            "description" : "Nome do personagem"
-          },
-          "role" : {
-            "type" : "string",
-            "description" : "Função do personagem"
-          },
-          "school" : {
-            "type" : "string",
-            "description" : "Escola do personagem"
-          },
-          "houseId" : {
-            "type" : "string",
-            "description" : "Código identificador da casa que o personagem pertence"
-          },
-          "patronus" : {
-            "type" : "string",
-            "description" : "Patronous do personagem"
-          }
-        }
-      },
-      "ConsultarPersonagemResponseDTO" : {
-        "required" : [ "houseId", "name", "patronus", "role", "school" ],
-        "type" : "object",
-        "properties" : {
-          "name" : {
-            "type" : "string",
-            "description" : "Nome do personagem",
-            "example" : "Harry Potter"
-          },
-          "role" : {
-            "type" : "string",
-            "description" : "Função do personagem",
-            "example" : "student"
-          },
-          "school" : {
-            "type" : "string",
-            "description" : "Escola do personagem",
-            "example" : "Hogwarts School of Witchcraft and Wizardry"
-          },
-          "houseId" : {
-            "type" : "string",
-            "description" : "Código identificador da casa que o personagem pertence",
-            "example" : "5a05e2b252f721a3cf2ea33f"
-          },
-          "patronus" : {
-            "type" : "string",
-            "description" : "Patronous do personagem",
-            "example" : "stag"
-          },
-          "id" : {
-            "type" : "string",
-            "description" : "Código identificador único do personagem criado",
-            "example" : "5a12292a0f5ae10021650d7e"
-          },
-          "dataHoraCriacao" : {
-            "pattern" : "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-            "type" : "string",
-            "description" : "Data/Hora da Criação do personagem em banco de dados",
-            "format" : "date-time"
-          },
-          "dataHoraUltAtualizacao" : {
-            "pattern" : "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-            "type" : "string",
-            "description" : "Data/Hora da ultíma atualização das informações do personagem em banco de dados",
-            "format" : "date-time"
-          }
-        },
-        "description" : "Representação do response de consultar personagem."
       }
     }
   }
