@@ -3,9 +3,7 @@ Este projeto consiste em fornecer uma API REST para inserir, atualizar, excluir 
 Possui integração com o a api do site [potterapi](https://www.potterapi.com) que disponibiliza uma série de informações sobre o universo de Harry Potter.
 A documentação da API pode ser obtida em: [`/src/main/resources/doc/`](src/main/resources/doc/).
 
-
 ## Tecnologias Utilizadas
-
 | Tecnologias               |
 | --------------------------|
 | Java 8                    |  
