@@ -177,10 +177,8 @@ public class HarryPotterController extends AbstractController {
                     content = {@Content(mediaType = MimeTypeUtils.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ResponseErroDTO.class))})
     })
-    public ResponseEntity<PersonagemDTO> consultarPersonagem(@Valid @PathVariable("id") String codigo) throws InterruptedException {
-        log.info(" >>> Iniciando consulta");
+    public ResponseEntity<PersonagemDTO> consultarPersonagem(@NotEmpty @PathVariable("id") String codigo) throws InterruptedException {
         PersonagemDTO responseDTO = this.service.consultarPersonagem(codigo);
-        log.info(">>> Finalizando cache");
         return ok(responseDTO);
     }
 
