@@ -2,6 +2,8 @@
 Este projeto consiste em fornecer uma API REST para inserir, atualizar,excluir e consultar Personagens do universo de Harry Potter.
 Possui integração com o a api do site [potterapi](https://www.potterapi.com) que disponibiliza uma série de informações sobre o universo de Harry Potter.
 
+A documentação da API pode ser obtida em: [`/src/main/resources/doc/`](src/main/resources/doc/), lá estão definidos todos os end-points, payload.
+
 ## Ferramentas de Desenvolvimento
 Controle de versão utilizado no projeto é o [Git](https://git-scm.com/), especificamente o 
 [GitHub](https://github.com/idutra/hp-challenge).
@@ -67,7 +69,7 @@ Para gerar a documentação no padrão OpenAPI 3.0 é necessário executar o com
 A Geração da documentação é realizada através do comando maven abaixo
 > mvn install -P gerar-doc-openapi
 
-A documentação será criada na pasta [`/src/main/resources/doc/idutra-api.v${project.version}.html`](src/main/resources/doc/)
+A documentação será criada na pasta [`/src/main/resources/doc/`](src/main/resources/doc/)
 
 ### Processo Manual
 Para gerar a documentação manualmente, basta exetutar os passos a seguir
