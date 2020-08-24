@@ -12,12 +12,9 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_DH_CREATION_NOT_NULL;
-import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_DH_ULT_ATU_NOT_NULL;
 import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_HOUSE_ID_NOT_EMPTY;
 import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_ID_NOT_EMPTY;
 import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_NAME_NOT_EMPTY;
@@ -26,8 +23,6 @@ import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_ROLE_NOT_
 import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_SCHOOL_NOT_EMPTY;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString(callSuper = true, exclude = "proprietario")
 @Table(name = "personagem", uniqueConstraints = {
         @UniqueConstraint(columnNames = "name", name = "personagem_nome_uk")
@@ -48,9 +43,7 @@ public class Personagem {
     private String houseId;
     @NotEmpty(message = MSG_PERSONAGEM_PATRONUS_NOT_EMPTY)
     private String patronus;
-    @NotNull(message = MSG_PERSONAGEM_DH_CREATION_NOT_NULL)
     private OffsetDateTime dataHoraCriacao;
-    @NotNull(message = MSG_PERSONAGEM_DH_ULT_ATU_NOT_NULL)
     private OffsetDateTime dataHoraUltAtualizacao;
 
     @PrePersist
@@ -58,7 +51,7 @@ public class Personagem {
         if (Strings.isEmpty(this.id)) {
             this.id = UUID.randomUUID().toString();
         }
-        this.dataHoraCriacao = OffsetDateTime.now();
-        this.dataHoraUltAtualizacao = OffsetDateTime.now();
+        this.setDataHoraCriacao(OffsetDateTime.now());
+        this.setDataHoraUltAtualizacao(OffsetDateTime.now());
     }
 }

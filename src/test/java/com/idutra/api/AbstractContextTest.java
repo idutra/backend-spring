@@ -95,6 +95,7 @@ public abstract class AbstractContextTest {
     protected CharactersApiDTO[] getCharactersApiMock(Personagem personagem) {
         CharactersApiDTO charApiMock = this.modelMapper.map(personagem, CharactersApiDTO.class);
         charApiMock.setHouse(personagem.getHouseId());
+        charApiMock.set_id(RandomStringUtils.random(8, true, true));
         return new CharactersApiDTO[]{charApiMock};
     }
 

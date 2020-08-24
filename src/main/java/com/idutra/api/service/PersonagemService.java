@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static com.idutra.api.constants.MensagemConstant.MSG_INT_POTTER_API_CHAR_HOUSE_INVALID;
 import static com.idutra.api.constants.MensagemConstant.MSG_LISTA_PERSONAGEM_EMPTY;
+import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_DUPLICADO;
 import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_ID_NOT_EMPTY;
 import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_NOT_FOUND;
 import static com.idutra.api.constants.MensagemConstant.MSG_PERSONAGEM_NOT_NULL;
@@ -116,6 +117,9 @@ public class PersonagemService extends GenericService<PersonagemRepository, Pers
             throw new ValidacaoNegocioException(MSG_INT_POTTER_API_CHAR_HOUSE_INVALID, personagem.getName(), personagem.getHouseId(), houseApiDTO.get__v());
         }
         personagem.setId(charactersApiDTO.get_id());
+        this.repository.findById(personagem.getId()).ifPresent(p -> {
+            throw new ValidacaoNegocioException(MSG_PERSONAGEM_DUPLICADO, p.getName(), p.getId());
+        });
     }
 
     /**

@@ -6,8 +6,8 @@ public interface MensagemConstant {
     String URI_CHAR = "characters";
     String URI_CHAR_CREATE = "characters/create";
     String URI_CHAR_UPDATE = "characters/update";
-    String URI_CHAR_REMOVE = "characters/delete/{uuid}";
-    String URI_CHAR_GET = "characters/{uuid}";
+    String URI_CHAR_REMOVE = "characters/delete/{id}";
+    String URI_CHAR_GET = "characters/{id}";
 
     /*Doc Api*/
     String DOC_TAG_CHAR = "Personagem";
@@ -19,6 +19,7 @@ public interface MensagemConstant {
     String MSG_INT_POTTER_API_CHAR_NOT_FOUND = "integracao.potterapi.char.notfound.message";
     String MSG_INT_POTTER_API_CHAR_HOUSE_INVALID = "integracao.potterapi.charhouse.invalid.message";
     String MSG_INT_POTTER_API_HOUSE_INVALID = "integracao.potterapi.house.invalid.message";
+
 
     String MSG_PERSONAGEM_NOT_FOUND = "entity.personagem.notfound.message";
     String MSG_LISTA_PERSONAGEM_EMPTY = "entity.lista.personagem.empty.message";
@@ -33,6 +34,7 @@ public interface MensagemConstant {
     String MSG_REQUEST_BODY_MISSING = "requestBody.invalid.message";
     String MSG_REQUEST_PARAM_MISSING = "requestParam.missing.message";
     String MISSING_HEADER_MESSAGE = "exception.missing.header.message";
+    String MSG_PERSONAGEM_DUPLICADO = "entity.personagem.duplicado.message";
 
     /*Atributos*/
     String MSG_PERSONAGEM_ID_NOT_EMPTY = "atributo.id.notempty.message";
