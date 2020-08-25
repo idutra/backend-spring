@@ -2,6 +2,7 @@
 
 
 Acesso online a documentação swagger: [http://idutra-app.jelastic.saveincloud.net/idutra/swagger-ui.html](http://idutra-app.jelastic.saveincloud.net/idutra/swagger-ui.html)
+Acesso online a documentação Redoc: [http://idutra-app-doc.jelastic.saveincloud.net/idutra-api.htm](http://idutra-app-doc.jelastic.saveincloud.net/idutra-api.htm)
 
 # Idutra Service
 Este projeto consiste em fornecer uma API REST para inserir, atualizar, excluir e consultar Personagens do universo de Harry Potter.
