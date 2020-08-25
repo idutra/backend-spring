@@ -31,11 +31,6 @@
         <download-maven-plugin.version>1.5.0</download-maven-plugin.version>
         <springdoc.openapi.ui.version>1.4.3</springdoc.openapi.ui.version>
         <maven.test.skip>false</maven.test.skip>
-        <flyway.url>
-            jdbc:sqlserver://localhost;DatabaseName=id_api;sendStringParametersAsUnicode=false
-        </flyway.url>
-        <flyway.user>sa</flyway.user>
-        <flyway.password>teste@123</flyway.password>
         <commons.io.version>2.6</commons.io.version>
     </properties>
     <dependencyManagement>
@@ -229,36 +224,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>flyway</id>
-            <activation>
-                <property>
-                    <name>flyway-db</name>
-                </property>
-            </activation>
-            <build>
-                <finalName>${project.artifactId}</finalName>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-release-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.flywaydb</groupId>
-                        <artifactId>flyway-maven-plugin</artifactId>
-                        <configuration>
-                            <schemas>
-                                <schema>public</schema>
-                            </schemas>
-                            <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
-                            <url>${flyway.url}</url>
-                            <user>${flyway.user}</user>
-                            <password>${flyway.password}</password>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>gerar-doc-openapi</id>
             <build>
