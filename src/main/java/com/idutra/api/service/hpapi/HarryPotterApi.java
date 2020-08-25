@@ -19,6 +19,6 @@ public interface HarryPotterApi {
 
     @GET
     @Path("/characters")
-    Response getCharacters(@QueryParam("key") String key, @QueryParam("name") String name);
+    Response getCharactersByName(@QueryParam("key") String key, @QueryParam("name") String name);
 }
 

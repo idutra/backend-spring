@@ -15,6 +15,7 @@ public class IntegracaoApiHpException extends AbstractException {
         super(message, cause, args);
     }
 
+
     public IntegracaoApiHpException(String message, ErroDTO erroDTO) {
         super(message);
         this.erroDTO = erroDTO;
