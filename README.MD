@@ -1,7 +1,5 @@
 [![build](https://img.shields.io/circleci/build/github/idutra/backend-spring/master)](https://circleci.com/gh/idutra/backend-spring)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/idutra/backend-spring/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/idutra/backend-spring/?branch=master)
-
-Acesso online a documentação swagger: [idutra-jlastic](http://idutra-app.jelastic.saveincloud.net/idutra/swagger-ui.html)
+Acesso online a documentação swagger: [http://idutra-app.jelastic.saveincloud.net/idutra/swagger-ui.html](http://idutra-app.jelastic.saveincloud.net/idutra/swagger-ui.html)
 
 # Idutra Service
 Este projeto consiste em fornecer uma API REST para inserir, atualizar, excluir e consultar Personagens do universo de Harry Potter.
