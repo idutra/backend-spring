@@ -1,3 +1,5 @@
+[![build](https://img.shields.io/circleci/build/github/idutra/backend-api-spring/master)](https://circleci.com/gh/idutra/backend-api-spring)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/idutra/backend-spring/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/idutra/backend-spring/?branch=master)
 # Idutra Service
 Este projeto consiste em fornecer uma API REST para inserir, atualizar, excluir e consultar Personagens do universo de Harry Potter.
 Possui integração com o a api do site [potterapi](https://www.potterapi.com) que disponibiliza uma série de informações sobre o universo de Harry Potter.
