@@ -3,12 +3,13 @@ package com.idutra.api.controller;
 import com.idutra.api.exception.ObjetoNaoEncontradoException;
 import com.idutra.api.model.dto.rest.Personagem;
 import com.idutra.api.model.dto.rest.PersonagemDTO;
-import com.idutra.api.model.dto.rest.request.AlterarPersonagemRequestDTO;
 import com.idutra.api.model.dto.rest.request.CriarPersonagemRequestDTO;
+import com.idutra.api.model.dto.rest.request.ListarPersonagemRequestDTO;
 import com.idutra.api.model.dto.rest.response.CriarPersonagemResponseDTO;
 import com.idutra.api.repository.PersonagemRepository;
 import com.idutra.api.service.PersonagemService;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,17 +22,16 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static com.idutra.api.constants.MensagemConstant.URI_BASE;
+import static com.idutra.api.constants.MensagemConstant.URI_CHAR;
 import static com.idutra.api.constants.MensagemConstant.URI_CHAR_CREATE;
 import static com.idutra.api.constants.MensagemConstant.URI_CHAR_GET;
 import static com.idutra.api.constants.MensagemConstant.URI_CHAR_REMOVE;
-import static com.idutra.api.constants.MensagemConstant.URI_CHAR_UPDATE;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Log4j2
@@ -75,6 +75,14 @@ class HarryPotterControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void buscarPersonagemNotFound() {
+        assertDoesNotThrow(() -> this.mockMvc.perform(get(URI_BASE.concat(URI_CHAR_GET), RandomStringUtils.random(8, true, true))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound()).andReturn());
+    }
+
+    @Test
     void salvarPersonagem() {
         Personagem personagem = this.getPersonagemMock();
         CriarPersonagemRequestDTO requestDTO = this.modelMapper.map(personagem, CriarPersonagemRequestDTO.class);
@@ -93,26 +101,30 @@ class HarryPotterControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void alterarPersonagem() {
+    void salvarPersonsagemBadRequest() {
         Personagem personagem = this.getPersonagemMock();
-        this.mockResponseGeneric(this.getCharactersApiMock(personagem), HttpMethod.GET, REGEX_GET_CHAR_POTTER_API, HttpStatus.CREATED);
-        this.mockResponseGeneric(this.getHouseApiMock(personagem.getHouseId(), personagem.getHouseId()), HttpMethod.GET, REGEX_GET_HOUSE_API, HttpStatus.CREATED);
-        PersonagemDTO personagemDTO = this.modelMapper.map(personagem, PersonagemDTO.class);
-        CriarPersonagemResponseDTO responseDTO = assertDoesNotThrow(() -> this.service.salvarPersonagem(personagemDTO));
-        assertNotNull(responseDTO);
+        CriarPersonagemRequestDTO requestDTO = this.modelMapper.map(personagem, CriarPersonagemRequestDTO.class);
 
-        AlterarPersonagemRequestDTO requestDTO = this.modelMapper.map(responseDTO, AlterarPersonagemRequestDTO.class);
-
-        assertDoesNotThrow(() -> this.mockMvc.perform(put(URI_BASE.concat(URI_CHAR_UPDATE))
+        assertDoesNotThrow(() -> this.mockMvc.perform(post(URI_BASE.concat(URI_CHAR_CREATE))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(requestDTO)))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.role").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.school").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.houseId").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.patronus").isNotEmpty()).andReturn());
+                .andExpect(status().isBadRequest()).andReturn());
+    }
+
+    @Test
+    void salvarPersonsagemBadNotFound() {
+        Personagem personagem = this.getPersonagemMock();
+        CriarPersonagemRequestDTO requestDTO = this.modelMapper.map(personagem, CriarPersonagemRequestDTO.class);
+        this.mockResponseGeneric(this.getCharactersApiMock(personagem), HttpMethod.GET, REGEX_GET_CHAR_POTTER_API, HttpStatus.CREATED);
+        this.mockResponseGeneric(this.getHouseApiMock(personagem.getHouseId(), personagem.getHouseId()), HttpMethod.GET, REGEX_GET_HOUSE_API, HttpStatus.CREATED);
+        requestDTO.setHouseId(RandomStringUtils.random(8, true, true));
+        requestDTO.setName(RandomStringUtils.random(8, true, true));
+        assertDoesNotThrow(() -> this.mockMvc.perform(post(URI_BASE.concat(URI_CHAR_CREATE))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(requestDTO)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest()).andReturn());
     }
 
     @Test
@@ -132,6 +144,28 @@ class HarryPotterControllerTest extends AbstractControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.mensagem").isNotEmpty()).andReturn());
 
         assertThrows(ObjetoNaoEncontradoException.class, () -> this.service.consultarPersonagem(responseDTO.getId()));
+    }
+
+    @Test
+    void listarPersonagens() {
+        Personagem personagem = this.getPersonagemMock();
+        this.mockResponseGeneric(this.getCharactersApiMock(personagem), HttpMethod.GET, REGEX_GET_CHAR_POTTER_API, HttpStatus.CREATED);
+        this.mockResponseGeneric(this.getHouseApiMock(personagem.getHouseId(), personagem.getHouseId()), HttpMethod.GET, REGEX_GET_HOUSE_API, HttpStatus.CREATED);
+        PersonagemDTO personagemDTO = this.modelMapper.map(personagem, PersonagemDTO.class);
+        CriarPersonagemResponseDTO responseDTO = assertDoesNotThrow(() -> this.service.salvarPersonagem(personagemDTO));
+        assertNotNull(responseDTO);
+
+        ListarPersonagemRequestDTO listarPersonagemRequestDTO = new ListarPersonagemRequestDTO();
+        listarPersonagemRequestDTO.setName(responseDTO.getName());
+
+        assertDoesNotThrow(() -> this.mockMvc.perform(get(URI_BASE.concat(URI_CHAR))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(listarPersonagemRequestDTO)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.personagens").isNotEmpty()).andReturn());
 
     }
+
+
 }
