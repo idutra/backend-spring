@@ -113,21 +113,6 @@ class HarryPotterControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void salvarPersonsagemBadNotFound() {
-        Personagem personagem = this.getPersonagemMock();
-        CriarPersonagemRequestDTO requestDTO = this.modelMapper.map(personagem, CriarPersonagemRequestDTO.class);
-        this.mockResponseGeneric(this.getCharactersApiMock(personagem), HttpMethod.GET, REGEX_GET_CHAR_POTTER_API, HttpStatus.CREATED);
-        this.mockResponseGeneric(this.getHouseApiMock(personagem.getHouseId(), personagem.getHouseId()), HttpMethod.GET, REGEX_GET_HOUSE_API, HttpStatus.CREATED);
-        requestDTO.setHouseId(RandomStringUtils.random(8, true, true));
-        requestDTO.setName(RandomStringUtils.random(8, true, true));
-        assertDoesNotThrow(() -> this.mockMvc.perform(post(URI_BASE.concat(URI_CHAR_CREATE))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(requestDTO)))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isBadRequest()).andReturn());
-    }
-
-    @Test
     void removerPersonagem() {
         Personagem personagem = this.getPersonagemMock();
         this.mockResponseGeneric(this.getCharactersApiMock(personagem), HttpMethod.GET, REGEX_GET_CHAR_POTTER_API, HttpStatus.CREATED);
